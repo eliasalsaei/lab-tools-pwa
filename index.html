@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Lab Tools</title>
+<meta name="theme-color" content="#0b1220" />
+<meta name="description" content="Offline lab calculators, procedures, and logbook for water and power plant lab work." />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" href="./icons/icon-192.png" />
+<link rel="apple-touch-icon" href="./icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Lab Tools" />
+<link rel="stylesheet" href="./css/main.css" />
+<link rel="stylesheet" href="./css/themes.css" />
+</head>
+<body>
+<div id="app">
+  <header class="app-header">
+    <h1 class="app-title">Lab Tools</h1>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme" type="button">&#9788;</button>
+  </header>
+
+  <main id="view" class="view" aria-live="polite"></main>
+
+  <nav class="tab-bar" aria-label="Main navigation">
+    <a href="#/" class="tab-link" data-route="/">
+      <span class="tab-icon" aria-hidden="true">&#8962;</span><span>Home</span>
+    </a>
+    <a href="#/calculators" class="tab-link" data-route="/calculators">
+      <span class="tab-icon" aria-hidden="true">&#8776;</span><span>Calculators</span>
+    </a>
+    <a href="#/procedures" class="tab-link" data-route="/procedures">
+      <span class="tab-icon" aria-hidden="true">&#128220;</span><span>Procedures</span>
+    </a>
+    <a href="#/log" class="tab-link" data-route="/log">
+      <span class="tab-icon" aria-hidden="true">&#128221;</span><span>Logbook</span>
+    </a>
+  </nav>
+
+  <div id="update-banner" class="update-banner" hidden>
+    <span>Update available</span>
+    <button id="update-refresh-btn" type="button">Refresh</button>
+  </div>
+</div>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

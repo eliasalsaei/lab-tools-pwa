@@ -1,0 +1,150 @@
+[
+  {
+    "id": "water-alkalinity-sm2320b",
+    "domain": "water",
+    "title": "Total Alkalinity — Titration Method",
+    "methodRef": "Standard Methods 2320B",
+    "aliases": ["alkalinity titration", "total alkalinity"],
+    "equipment": ["Burette or digital titrator", "100 mL sample flask", "pH meter (or indicator)"],
+    "reagents": ["0.02N sulfuric acid titrant", "Bromcresol green-methyl red or phenolphthalein indicator"],
+    "steps": [
+      "Measure 100 mL of sample (or a smaller aliquot diluted to 100 mL) into a flask.",
+      "If checking for phenolphthalein alkalinity, add 2-3 drops of phenolphthalein indicator; titrate with standard acid to a colorless endpoint (pH 8.3) and record volume as P.",
+      "Add 2-3 drops of bromcresol green-methyl red indicator (or continue monitoring with a pH meter).",
+      "Titrate with standard acid to the pH 4.5 endpoint (color changes from blue-green to a light pink/red, or pH meter reads 4.5).",
+      "Record total titrant volume used as the total alkalinity titration volume.",
+      "Calculate mg/L as CaCO3 using the Total Alkalinity calculator."
+    ],
+    "safetyNotes": ["Acid handling — wear safety glasses and gloves.", "Rinse burette and glassware with distilled water between samples."],
+    "calcRef": "water-alkalinity"
+  },
+  {
+    "id": "water-hardness-sm2340c",
+    "domain": "water",
+    "title": "Total, Calcium, and Magnesium Hardness — EDTA Titration",
+    "methodRef": "Standard Methods 2340C",
+    "aliases": ["hardness titration", "EDTA hardness", "calcium hardness"],
+    "equipment": ["Burette or digital titrator", "100 mL sample flask"],
+    "reagents": ["0.01M EDTA titrant (or per titer)", "Eriochrome Black T indicator (total hardness)", "Murexide indicator (calcium hardness)", "Buffer solution pH 10 (total hardness)", "1N NaOH (calcium hardness)"],
+    "steps": [
+      "For total hardness: measure 100 mL sample, add ~2 mL pH 10 buffer, add a small amount of Eriochrome Black T indicator.",
+      "Titrate with EDTA titrant until the color changes from wine-red to blue; record titrant volume.",
+      "For calcium hardness: measure a fresh 100 mL sample, add 1N NaOH to raise pH to 12-13, add murexide indicator.",
+      "Titrate with EDTA until the color changes from pink to purple; record titrant volume.",
+      "Calculate total, calcium, and magnesium hardness (by difference) using the Hardness calculator."
+    ],
+    "safetyNotes": ["NaOH is caustic — wear gloves and eye protection."],
+    "calcRef": "water-hardness"
+  },
+  {
+    "id": "water-chlorine-dpd",
+    "domain": "water",
+    "title": "Chlorine Residual — DPD Colorimetric Method",
+    "methodRef": "Standard Methods 4500-Cl G",
+    "aliases": ["chlorine residual", "DPD test", "free chlorine"],
+    "equipment": ["DPD colorimeter or comparator", "Sample cells"],
+    "reagents": ["DPD reagent (powder pillow or tablet)"],
+    "steps": [
+      "Rinse the sample cell with sample water.",
+      "Fill the sample cell to the fill line with sample.",
+      "Add the DPD reagent, cap, and invert gently to mix (do not shake vigorously).",
+      "Read the result within 1 minute on the colorimeter (color fades over time).",
+      "If the sample was diluted to fit the instrument's range, apply the dilution factor using the Chlorine Residual calculator."
+    ],
+    "safetyNotes": ["Avoid skin contact with DPD reagent."],
+    "calcRef": "water-chlorine-residual"
+  },
+  {
+    "id": "water-turbidity-nephelometric",
+    "domain": "water",
+    "title": "Turbidity — Nephelometric Method",
+    "methodRef": "Standard Methods 2130B",
+    "aliases": ["turbidity", "NTU", "nephelometer"],
+    "equipment": ["Nephelometer/turbidimeter", "Sample cells", "Formazin or StablCal standards for calibration"],
+    "reagents": ["Calibration standards (per instrument manual)"],
+    "steps": [
+      "Verify instrument calibration with known standards; recalibrate if out of tolerance.",
+      "Gently invert the sample to homogenize without introducing air bubbles.",
+      "Wipe the sample cell with a lint-free cloth and apply optical coupling fluid/silicone oil if required by the instrument.",
+      "Insert the cell into the instrument and read turbidity in NTU.",
+      "Take multiple readings and average if the reading is unstable."
+    ],
+    "safetyNotes": [],
+    "calcRef": null
+  },
+  {
+    "id": "water-ph-electrometric",
+    "domain": "water",
+    "title": "pH — Electrometric Method",
+    "methodRef": "Standard Methods 4500-H+B",
+    "aliases": ["pH meter", "pH calibration"],
+    "equipment": ["pH meter and probe", "Buffer solutions (e.g. 4.00, 7.00, 10.00)"],
+    "reagents": ["pH buffer solutions"],
+    "steps": [
+      "Calibrate the meter using at least two buffers that bracket the expected sample pH.",
+      "Rinse the probe with distilled water between buffers and samples.",
+      "Immerse the probe in the sample, gently stir, and allow the reading to stabilize.",
+      "Record the pH and sample temperature (pH is temperature-dependent).",
+      "Rinse and store the probe per manufacturer instructions (typically in storage solution, not dry)."
+    ],
+    "safetyNotes": [],
+    "calcRef": null
+  },
+  {
+    "id": "water-tds-sm2540c",
+    "domain": "water",
+    "title": "Total Dissolved Solids — Conductivity/Gravimetric",
+    "methodRef": "Standard Methods 2540C",
+    "aliases": ["TDS", "conductivity"],
+    "equipment": ["Conductivity meter", "Drying oven and evaporating dish (gravimetric method)", "Analytical balance"],
+    "reagents": [],
+    "steps": [
+      "Quick estimate: measure sample conductivity and apply the site-specific conversion factor using the TDS calculator.",
+      "Gravimetric (reference) method: filter a measured sample volume through a glass fiber filter.",
+      "Evaporate the filtrate in a pre-weighed dish and dry at 180°C to constant weight.",
+      "Calculate TDS (mg/L) from the weight gain divided by the sample volume.",
+      "Periodically verify the conductivity conversion factor against the gravimetric result."
+    ],
+    "safetyNotes": ["Use oven mitts and let dishes cool in a desiccator before weighing."],
+    "calcRef": "water-tds-conductivity"
+  },
+  {
+    "id": "water-jar-test",
+    "domain": "water",
+    "title": "Jar Test Procedure",
+    "methodRef": "Standard bench jar test practice",
+    "aliases": ["jar test", "coagulation test"],
+    "equipment": ["Jar test apparatus (multi-paddle stirrer)", "Turbidimeter", "1-2 L sample jars"],
+    "reagents": ["Coagulant stock solution", "Polymer stock solution (if used)"],
+    "steps": [
+      "Fill each jar with an equal volume of raw water sample.",
+      "Add increasing coagulant doses to each jar (e.g. one control + 4-6 test doses).",
+      "Rapid mix (~100 rpm) for 1 minute to disperse coagulant.",
+      "Slow mix (~20-30 rpm) for 15-20 minutes to promote floc formation.",
+      "Let settle undisturbed for 30 minutes.",
+      "Record floc appearance and measure supernatant turbidity for each jar.",
+      "Enter dose/turbidity pairs into the Jar Test calculator to identify the optimum dose."
+    ],
+    "safetyNotes": ["Follow the coagulant/polymer SDS for handling precautions."],
+    "calcRef": "water-jar-test"
+  },
+  {
+    "id": "water-feed-pump-calibration",
+    "domain": "water",
+    "title": "Chemical Feed Pump Calibration",
+    "methodRef": "Standard bench calibration practice",
+    "aliases": ["pump calibration", "feed pump drawdown"],
+    "equipment": ["Graduated drawdown cylinder/tube", "Stopwatch"],
+    "reagents": [],
+    "steps": [
+      "Close the suction valve from the day tank and open the calibration column valve so the pump draws from the graduated column.",
+      "Record the starting liquid level in the column.",
+      "Run the pump for a measured time interval (e.g. 1-3 minutes) at the current stroke/speed setting.",
+      "Record the ending liquid level and calculate the volume drawn down.",
+      "Convert the drawdown volume and time into a feed rate, and compare to the target rate from the Feed Pump Rate calculator.",
+      "Adjust stroke length/speed and repeat until the measured rate matches the target."
+    ],
+    "safetyNotes": ["Wear appropriate PPE for the chemical in use."],
+    "calcRef": "water-feed-pump-rate"
+  }
+]

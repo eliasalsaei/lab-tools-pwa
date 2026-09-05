@@ -1,0 +1,128 @@
+[
+  {
+    "id": "boiler-coc-monitoring",
+    "domain": "boiler",
+    "title": "Cooling Tower Cycles of Concentration — Monitoring",
+    "methodRef": "Standard site monitoring practice",
+    "aliases": ["cycles of concentration", "COC", "cooling tower"],
+    "equipment": ["Conductivity meter or chloride test kit"],
+    "reagents": ["Chloride titration reagents (if using Cl- method)"],
+    "steps": [
+      "Collect a makeup water sample and a blowdown (or tower basin) water sample at the same time.",
+      "Measure conductivity (or chloride) on both samples using the same method.",
+      "Enter both values into the Cycles of Concentration calculator.",
+      "Compare the result to the target COC for the system; adjust blowdown rate if outside target range."
+    ],
+    "safetyNotes": [],
+    "calcRef": "boiler-coc"
+  },
+  {
+    "id": "boiler-blowdown-sampling",
+    "domain": "boiler",
+    "title": "Boiler Blowdown — Procedure and Sampling",
+    "methodRef": "Standard site sampling practice",
+    "aliases": ["blowdown", "boiler blowdown sample"],
+    "equipment": ["Sample cooler (if sampling from a hot line)", "Sample bottles"],
+    "reagents": [],
+    "steps": [
+      "Confirm blowdown valve and sample cooler are in service and cooled to a safe handling temperature.",
+      "Flush the sample line for at least 1-2 minutes before collecting a sample.",
+      "Collect the sample in a clean bottle, avoiding overflow/splash.",
+      "Test boiler water TDS/conductivity and other required parameters promptly.",
+      "Use the Boiler % Blowdown calculator with feedwater and max allowed boiler TDS to verify blowdown rate is adequate.",
+      "Log results and any valve adjustments made in the Logbook."
+    ],
+    "safetyNotes": ["Blowdown water and lines can be extremely hot — use proper PPE and allow cooling before direct sampling."],
+    "calcRef": "boiler-percent-blowdown"
+  },
+  {
+    "id": "boiler-silica-sm4500sio2",
+    "domain": "boiler",
+    "title": "Silica Testing — Colorimetric Method",
+    "methodRef": "Standard Methods 4500-SiO2",
+    "aliases": ["silica test", "SiO2"],
+    "equipment": ["Colorimeter or spectrophotometer", "Sample cells"],
+    "reagents": ["Molybdate reagent", "Acid reagent", "Reducing agent (e.g. amino acid reagent)"],
+    "steps": [
+      "Collect a representative boiler water (or feedwater) sample in a silica-free container.",
+      "Add molybdate reagent and allow color development per kit instructions.",
+      "Add acid reagent to eliminate phosphate interference.",
+      "Add reducing agent and wait the specified development time.",
+      "Read silica concentration on the colorimeter/spectrophotometer.",
+      "Compare the result against the maximum allowed silica for the operating pressure using the Silica Carryover Check calculator."
+    ],
+    "safetyNotes": ["Handle acid reagent with gloves and eye protection."],
+    "calcRef": "boiler-silica-carryover"
+  },
+  {
+    "id": "boiler-phosphate-sm4500p",
+    "domain": "boiler",
+    "title": "Phosphate Residual — Colorimetric Method",
+    "methodRef": "Standard Methods 4500-P",
+    "aliases": ["phosphate test", "PO4 residual"],
+    "equipment": ["Colorimeter", "Sample cells"],
+    "reagents": ["Phosphate reagent (vanadomolybdophosphoric or equivalent)"],
+    "steps": [
+      "Collect a boiler water sample and allow it to cool to room temperature.",
+      "Fill the sample cell to the fill line.",
+      "Add the phosphate reagent and mix per kit instructions.",
+      "Wait the specified reaction time, then read on the colorimeter.",
+      "Compare the reading to the target residual; use the Phosphate Residual Dosing calculator to adjust chemical feed if needed."
+    ],
+    "safetyNotes": [],
+    "calcRef": "boiler-phosphate-dose"
+  },
+  {
+    "id": "boiler-sulfite-sm4500so3",
+    "domain": "boiler",
+    "title": "Sulfite Residual — Titration Method",
+    "methodRef": "Standard Methods 4500-SO3",
+    "aliases": ["sulfite test", "SO3 residual", "oxygen scavenger residual"],
+    "equipment": ["Burette or digital titrator", "Sample flask"],
+    "reagents": ["Standard titrant (e.g. phenylarsine oxide or iodine, per kit)", "Starch indicator (if applicable)"],
+    "steps": [
+      "Collect a fresh boiler water sample and test immediately (sulfite oxidizes quickly on exposure to air).",
+      "Measure the sample volume specified by the kit into a flask.",
+      "Add indicator and titrate to the specified endpoint.",
+      "Calculate residual using the kit's conversion, or the Sulfite Residual Dosing calculator to determine required feed adjustment."
+    ],
+    "safetyNotes": [],
+    "calcRef": "boiler-sulfite-dose"
+  },
+  {
+    "id": "boiler-feedwater-condensate-sampling",
+    "domain": "boiler",
+    "title": "Feedwater and Condensate Sampling",
+    "methodRef": "Standard site sampling practice",
+    "aliases": ["feedwater sample", "condensate sample"],
+    "equipment": ["Sample cooler", "Sample bottles"],
+    "reagents": [],
+    "steps": [
+      "Sample from designated feedwater and condensate return taps after adequate line flushing.",
+      "Allow samples to cool to a safe handling/testing temperature before analysis.",
+      "Test for the parameters required by the water treatment program (e.g. hardness, pH, conductivity, dissolved oxygen as applicable).",
+      "Use the Condensate Return % calculator with measured condensate and feedwater flows to track return percentage.",
+      "Log results and flag any out-of-range readings for follow-up."
+    ],
+    "safetyNotes": ["Condensate lines may be hot/pressurized — use proper PPE."],
+    "calcRef": "boiler-condensate-return"
+  },
+  {
+    "id": "boiler-conductivity-sm2510b",
+    "domain": "boiler",
+    "title": "Conductivity Measurement",
+    "methodRef": "Standard Methods 2510B",
+    "aliases": ["conductivity", "specific conductance"],
+    "equipment": ["Conductivity meter and probe", "Calibration standard solution"],
+    "reagents": ["Conductivity calibration standard"],
+    "steps": [
+      "Calibrate the meter against a known standard solution; recalibrate if drift is out of tolerance.",
+      "Rinse the probe with distilled water, then with a small volume of the sample.",
+      "Immerse the probe in the sample and allow the reading to stabilize.",
+      "Record conductivity (µS/cm) and sample temperature.",
+      "Use the Boiler Water TDS from Conductivity calculator if an estimated TDS is needed."
+    ],
+    "safetyNotes": [],
+    "calcRef": "boiler-tds-conductivity"
+  }
+]

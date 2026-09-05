@@ -1,0 +1,54 @@
+:root {
+  --bg: #f4f6f8;
+  --fg: #10151a;
+  --fg-muted: #5b6672;
+  --header-bg: #ffffff;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --border: #dde2e7;
+  --accent: #0b6e4f;
+  --accent-soft: #0b6e4f1a;
+  --accent-contrast: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1220;
+  --fg: #e8edf2;
+  --fg-muted: #93a1b0;
+  --header-bg: #101a2b;
+  --card-bg: #101a2b;
+  --input-bg: #0b1220;
+  --border: #23324a;
+  --accent: #22c58f;
+  --accent-soft: #22c58f26;
+  --accent-contrast: #06170f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1220;
+    --fg: #e8edf2;
+    --fg-muted: #93a1b0;
+    --header-bg: #101a2b;
+    --card-bg: #101a2b;
+    --input-bg: #0b1220;
+    --border: #23324a;
+    --accent: #22c58f;
+    --accent-soft: #22c58f26;
+    --accent-contrast: #06170f;
+  }
+}
+
+/* High-contrast mode for bright sunlight / low-light lab conditions */
+:root[data-theme="contrast"] {
+  --bg: #000000;
+  --fg: #ffffff;
+  --fg-muted: #cccccc;
+  --header-bg: #000000;
+  --card-bg: #111111;
+  --input-bg: #000000;
+  --border: #ffffff;
+  --accent: #ffd400;
+  --accent-soft: #ffd40033;
+  --accent-contrast: #000000;
+}

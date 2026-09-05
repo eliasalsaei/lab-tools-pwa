@@ -1,0 +1,111 @@
+[
+  {
+    "id": "wastewater-bod5-sm5210b",
+    "domain": "wastewater",
+    "title": "BOD5 Test — 5-Day Biochemical Oxygen Demand",
+    "methodRef": "Standard Methods 5210B",
+    "aliases": ["BOD", "BOD5", "biochemical oxygen demand"],
+    "equipment": ["BOD bottles (300 mL)", "DO meter/probe", "Incubator (20°C, dark)"],
+    "reagents": ["Dilution water (with nutrient buffer, seed as needed)"],
+    "steps": [
+      "Prepare dilution water and, if needed, seed with an appropriate microbial source.",
+      "Prepare sample dilutions expected to give a DO depletion of at least 2 mg/L with at least 1 mg/L DO remaining after 5 days.",
+      "Measure and record initial DO (D1) for sample bottles and seed blank bottles (B1).",
+      "Incubate all bottles at 20°C in the dark for 5 days, sealed with no air bubbles.",
+      "After 5 days, measure and record final DO (D2 and B2).",
+      "Calculate BOD5 using the BOD5 calculator with D1, D2, B1, B2, seed correction factor, and dilution fraction."
+    ],
+    "safetyNotes": ["Handle samples that may contain pathogens with standard lab PPE."],
+    "calcRef": "wastewater-bod5"
+  },
+  {
+    "id": "wastewater-cod-sm5220",
+    "domain": "wastewater",
+    "title": "COD Test — Closed Reflux Titrimetric Method",
+    "methodRef": "Standard Methods 5220",
+    "aliases": ["COD", "chemical oxygen demand"],
+    "equipment": ["COD digestion vials/reactor (150°C)", "Burette or digital titrator"],
+    "reagents": ["Potassium dichromate digestion solution", "Sulfuric acid reagent", "Ferroin indicator", "Standardized FAS (ferrous ammonium sulfate) titrant"],
+    "steps": [
+      "Add sample (and a blank using distilled water) to COD digestion vials per kit instructions.",
+      "Digest at 150°C for 2 hours in the COD reactor.",
+      "Allow vials to cool to room temperature.",
+      "Add ferroin indicator to each vial.",
+      "Titrate sample and blank with standardized FAS titrant to the color change endpoint (blue-green to reddish-brown).",
+      "Calculate COD using the COD calculator with blank and sample titrant volumes, FAS normality, and sample volume."
+    ],
+    "safetyNotes": ["Digestion solution contains strong acid and chromium — wear gloves/eye protection and use the reactor's safety shield."],
+    "calcRef": "wastewater-cod"
+  },
+  {
+    "id": "wastewater-mlss-mlvss-sm2540",
+    "domain": "wastewater",
+    "title": "MLSS / MLVSS — Gravimetric Method",
+    "methodRef": "Standard Methods 2540 D/E",
+    "aliases": ["MLSS", "MLVSS", "mixed liquor suspended solids"],
+    "equipment": ["Glass fiber filter", "Filtration apparatus", "Drying oven (103-105°C)", "Muffle furnace (550°C, for VSS)", "Analytical balance", "Desiccator"],
+    "reagents": [],
+    "steps": [
+      "Pre-dry and weigh a glass fiber filter (tare weight).",
+      "Filter a measured volume of well-mixed mixed liquor sample through the filter.",
+      "Dry the filter with residue at 103-105°C to constant weight; weigh (filter + dried residue).",
+      "For MLVSS: ignite the same filter at 550°C in a muffle furnace, cool in a desiccator, and reweigh (filter + residue after ignition).",
+      "Calculate MLSS and MLVSS using the MLSS / MLVSS calculator."
+    ],
+    "safetyNotes": ["Use tongs and heat-resistant gloves when handling filters from the oven/furnace; cool in a desiccator before weighing."],
+    "calcRef": "wastewater-mlss"
+  },
+  {
+    "id": "wastewater-svi-sm2710d",
+    "domain": "wastewater",
+    "title": "Settleability / Sludge Volume Index (SVI) Test",
+    "methodRef": "Standard Methods 2710D",
+    "aliases": ["SVI", "settleability", "settleometer"],
+    "equipment": ["1-liter graduated cylinder or settleometer"],
+    "reagents": [],
+    "steps": [
+      "Fill a 1-liter graduated cylinder with a well-mixed mixed liquor sample.",
+      "Let the sample settle undisturbed for 30 minutes.",
+      "Record the settled sludge volume (SSV30) in mL/L.",
+      "Measure MLSS on a companion sample (see MLSS/MLVSS procedure).",
+      "Calculate SVI using the SVI calculator with SSV30 and MLSS."
+    ],
+    "safetyNotes": [],
+    "calcRef": "wastewater-svi"
+  },
+  {
+    "id": "wastewater-do-sm4500og",
+    "domain": "wastewater",
+    "title": "Dissolved Oxygen — Membrane Electrode Method",
+    "methodRef": "Standard Methods 4500-O G",
+    "aliases": ["DO test", "dissolved oxygen", "DO meter"],
+    "equipment": ["DO meter with membrane electrode probe"],
+    "reagents": ["Membrane electrode calibration solution (or water-saturated air calibration)"],
+    "steps": [
+      "Calibrate the DO meter per manufacturer instructions (air calibration or a known standard).",
+      "Immerse the probe in the sample, maintaining adequate flow/stirring across the membrane per meter requirements.",
+      "Allow the reading to stabilize; record DO (mg/L) and temperature.",
+      "Use the DO % Saturation calculator with water temperature and barometric pressure correction to evaluate percent saturation."
+    ],
+    "safetyNotes": [],
+    "calcRef": "wastewater-do-saturation"
+  },
+  {
+    "id": "wastewater-was-ras-sampling",
+    "domain": "wastewater",
+    "title": "WAS / RAS Sampling Procedure",
+    "methodRef": "Standard site sampling practice",
+    "aliases": ["waste activated sludge", "return activated sludge", "WAS", "RAS"],
+    "equipment": ["Sample bottles/containers"],
+    "reagents": [],
+    "steps": [
+      "Identify the correct sampling point for WAS (wasting line) or RAS (return line) per the plant's flow diagram.",
+      "Flush the sample tap briefly before collecting, if applicable.",
+      "Collect a well-mixed, representative sample in a clean container.",
+      "Run required tests promptly (e.g. TSS/VSS, settleability) since activated sludge changes character quickly once collected.",
+      "Log sample time, location, and results in the Logbook."
+    ],
+    "safetyNotes": ["Treat activated sludge as a biohazard — wear gloves and wash hands after handling."],
+    "calcRef": null
+  }
+]
