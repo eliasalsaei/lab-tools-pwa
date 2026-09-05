@@ -1,5 +1,5 @@
 import { getView } from '../router.js';
-import { qs, qsa, escapeHtml, parseNum, round } from '../utils.js';
+import { qs, qsa, escapeHtml, parseNum, round, formatDateTime } from '../utils.js';
 import { db, uuid } from '../db.js';
 import { DOMAINS, getCalculator, calculatorsByDomain } from './registry.js';
 
@@ -127,7 +127,10 @@ export async function renderCalculatorDetail({ id }) {
     </form>
     <div id="calc-result"></div>
     <p class="disclaimer">Standard formula — verify constants (e.g. titrant normality) against your facility's official method before relying on this operationally.</p>
+    <div id="calc-history-section"></div>
   `;
+
+  await renderHistorySection(view, calc);
 
   const form = qs('#calc-form', view);
 
@@ -199,5 +202,32 @@ function renderResult(view, result, calc, values) {
     const btn = qs('#save-history-btn', view);
     btn.textContent = 'Saved ✓';
     btn.disabled = true;
+    await renderHistorySection(view, calc);
   });
+}
+
+async function renderHistorySection(view, calc) {
+  const container = qs('#calc-history-section', view);
+  if (!container) return;
+
+  const history = (await db.getAllByIndex('calcHistory', 'calcId', calc.id))
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 5);
+
+  if (!history.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="section-title">Recent Saved Runs</div>
+    ${history.map((h) => `
+      <div class="card">
+        <div class="log-entry-meta"><span>${formatDateTime(h.timestamp)}</span></div>
+        ${Object.entries(h.result).map(([label, r]) => `
+          <div class="result-row"><span>${escapeHtml(label)}</span><span class="result-value">${round(r.value, r.decimals ?? 2)} ${escapeHtml(r.unit || '')}</span></div>
+        `).join('')}
+      </div>
+    `).join('')}
+  `;
 }

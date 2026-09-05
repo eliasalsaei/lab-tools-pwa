@@ -37,6 +37,7 @@ const PRECACHE_URLS = [
   './js/procedures/procedures-viewer.js',
   './js/notes/notes.js',
   './js/notes/notes-ui.js',
+  './js/settings/settings-ui.js',
   './data/procedures/water.json',
   './data/procedures/boiler.json',
   './data/procedures/wastewater.json',

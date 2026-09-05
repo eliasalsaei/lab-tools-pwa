@@ -3,6 +3,7 @@ import { qs, escapeHtml, formatDate } from './utils.js';
 import { renderLogList, renderNewEntry, renderEditEntry } from './notes/notes-ui.js';
 import { renderCalculatorsHome, renderDomainList, renderCalculatorDetail } from './calculators/calculator-shell.js';
 import { renderProceduresList, renderProcedureDetail } from './procedures/procedures-viewer.js';
+import { renderSettings } from './settings/settings-ui.js';
 import { listEntries } from './notes/notes.js';
 import { DOMAINS, calculatorsByDomain } from './calculators/registry.js';
 
@@ -31,6 +32,8 @@ async function renderHome() {
         <p>${calculatorsByDomain(d.id).length} calculators</p>
       </a>
     `).join('')}
+
+    <a class="back-link" href="#/settings">Data &amp; Backup &rarr;</a>
 
     <p class="disclaimer">Calculations use standard textbook / Standard Methods formulas. Verify constants (titrant normality, conversion factors, etc.) against your facility's official method sheets before relying on results operationally.</p>
   `;
@@ -97,6 +100,7 @@ function initRoutes() {
   registerRoute('/log', renderLogList);
   registerRoute('/log/new', renderNewEntry);
   registerRoute('/log/:id', renderEditEntry);
+  registerRoute('/settings', renderSettings);
   setNotFound(() => '<div class="empty-state">Page not found.</div>');
   initRouter(qs('#view'));
 }
