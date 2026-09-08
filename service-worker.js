@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'labtools-v1';
+const CACHE_VERSION = 'labtools-v2';
 
 const PRECACHE_URLS = [
   './',
@@ -27,6 +27,9 @@ const PRECACHE_URLS = [
   './js/calculators/configs/boiler-sulfite-dose.js',
   './js/calculators/configs/boiler-condensate-return.js',
   './js/calculators/configs/boiler-tds-conductivity.js',
+  './js/calculators/configs/boiler-ph-from-conductivity.js',
+  './js/calculators/configs/boiler-conductivity-from-ph.js',
+  './js/calculators/lib/high-purity-ph.js',
   './js/calculators/configs/wastewater-bod5.js',
   './js/calculators/configs/wastewater-cod.js',
   './js/calculators/configs/wastewater-mlss.js',

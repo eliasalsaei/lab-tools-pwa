@@ -4,147 +4,493 @@
     "domain": "water",
     "title": "Total Alkalinity — Titration Method",
     "methodRef": "Standard Methods 2320B",
-    "aliases": ["alkalinity titration", "total alkalinity"],
-    "equipment": ["Burette or digital titrator", "100 mL sample flask", "pH meter (or indicator)"],
-    "reagents": ["0.02N sulfuric acid titrant", "Bromcresol green-methyl red or phenolphthalein indicator"],
-    "steps": [
-      "Measure 100 mL of sample (or a smaller aliquot diluted to 100 mL) into a flask.",
-      "If checking for phenolphthalein alkalinity, add 2-3 drops of phenolphthalein indicator; titrate with standard acid to a colorless endpoint (pH 8.3) and record volume as P.",
-      "Add 2-3 drops of bromcresol green-methyl red indicator (or continue monitoring with a pH meter).",
-      "Titrate with standard acid to the pH 4.5 endpoint (color changes from blue-green to a light pink/red, or pH meter reads 4.5).",
-      "Record total titrant volume used as the total alkalinity titration volume.",
-      "Calculate mg/L as CaCO3 using the Total Alkalinity calculator."
+    "aliases": ["alkalinity titration", "total alkalinity", "P alkalinity", "M alkalinity"],
+    "frequency": "Per shift on raw and treated water, or per treatment programme schedule",
+    "holdingTime": "Analyse within 24 h; store at 4 °C, fill bottle completely with no headspace",
+    "equipment": [
+      "Burette (25 or 50 mL) or Hach digital titrator",
+      "250 mL Erlenmeyer flask",
+      "100 mL volumetric pipette or graduated cylinder",
+      "Magnetic stirrer and stir bar (optional but recommended)",
+      "pH meter with calibrated electrode (preferred over indicators)"
     ],
-    "safetyNotes": ["Acid handling — wear safety glasses and gloves.", "Rinse burette and glassware with distilled water between samples."],
+    "reagents": [
+      "0.02 N (0.02 mol/L) sulfuric acid titrant — standardised",
+      "Phenolphthalein indicator solution",
+      "Bromcresol green-methyl red indicator solution",
+      "Distilled/deionised water for rinsing"
+    ],
+    "interferences": [
+      "Free residual chlorine above ~3 mg/L can bleach indicators — add 1 drop 0.1 N sodium thiosulfate to destroy it.",
+      "Highly coloured or turbid samples obscure the indicator endpoint — use the pH meter method instead.",
+      "Dissolved CO2 will change during handling: do not filter, dilute, or agitate the sample more than necessary, and keep the bottle capped until analysis."
+    ],
+    "steps": [
+      "Verify the titrant is in date and standardised. Record the exact normality on the bench sheet — it is a direct multiplier in the result.",
+      "If using a pH meter, calibrate it with pH 7.00 and pH 4.00 buffers and verify the slope is within acceptance (typically 95-105 %).",
+      "Rinse the burette twice with a small volume of titrant, fill, and set the meniscus to the zero mark with no air bubbles in the tip.",
+      "Measure exactly 100 mL of well-mixed sample into a clean 250 mL flask. For high-alkalinity samples (> 500 mg/L), use 50 mL and note the volume used.",
+      "PHENOLPHTHALEIN (P) ALKALINITY — only if pH > 8.3: add 2-3 drops of phenolphthalein indicator. A pink colour confirms P alkalinity is present. Titrate slowly with standard acid, swirling constantly, until the pink colour just disappears (pH 8.3). Record this volume as P.",
+      "TOTAL (M) ALKALINITY: add 2-3 drops of bromcresol green-methyl red indicator to the same flask (or continue monitoring with the pH meter).",
+      "Continue titrating dropwise, swirling after each drop, until the colour changes from blue-green to a light pink/salmon — or until the pH meter reads exactly 4.5. Approach the endpoint slowly; the last 1 mL should be added drop by drop.",
+      "Record the TOTAL titrant volume used from zero (this includes any volume used to reach the P endpoint).",
+      "Enter the sample volume, total titrant volume, and titrant normality into the Total Alkalinity calculator.",
+      "Log the result, the sample point, the time, and the titrant lot/normality in the Logbook.",
+      "Rinse all glassware with distilled water immediately after use; residual acid will bias the next sample low."
+    ],
+    "qualityControl": [
+      "Run a reagent blank (100 mL distilled water) — should require essentially zero titrant.",
+      "Run a duplicate on every 10th sample; duplicates should agree within about 5 %.",
+      "Verify the acid titrant against a known standard (e.g. sodium carbonate) at the interval set by your QA programme.",
+      "Investigate any result that differs from the previous shift by more than the site's control limit before reporting it."
+    ],
+    "troubleshooting": [
+      "Endpoint colour returns after a few seconds: the endpoint was passed too quickly — CO2 is re-equilibrating. Repeat with slower titration near the endpoint.",
+      "Result drifting high over successive runs: check for contaminated glassware or a diluted/degraded titrant.",
+      "No colour change at all: verify the indicator has not expired and that the correct indicator was used for the endpoint being targeted."
+    ],
+    "safetyNotes": [
+      "Sulfuric acid causes severe burns — wear safety glasses, gloves, and a lab coat.",
+      "Always add acid to water, never the reverse, when preparing dilutions.",
+      "Know the location of the nearest eyewash station before starting."
+    ],
     "calcRef": "water-alkalinity"
   },
   {
     "id": "water-hardness-sm2340c",
     "domain": "water",
     "title": "Total, Calcium, and Magnesium Hardness — EDTA Titration",
-    "methodRef": "Standard Methods 2340C",
-    "aliases": ["hardness titration", "EDTA hardness", "calcium hardness"],
-    "equipment": ["Burette or digital titrator", "100 mL sample flask"],
-    "reagents": ["0.01M EDTA titrant (or per titer)", "Eriochrome Black T indicator (total hardness)", "Murexide indicator (calcium hardness)", "Buffer solution pH 10 (total hardness)", "1N NaOH (calcium hardness)"],
-    "steps": [
-      "For total hardness: measure 100 mL sample, add ~2 mL pH 10 buffer, add a small amount of Eriochrome Black T indicator.",
-      "Titrate with EDTA titrant until the color changes from wine-red to blue; record titrant volume.",
-      "For calcium hardness: measure a fresh 100 mL sample, add 1N NaOH to raise pH to 12-13, add murexide indicator.",
-      "Titrate with EDTA until the color changes from pink to purple; record titrant volume.",
-      "Calculate total, calcium, and magnesium hardness (by difference) using the Hardness calculator."
+    "methodRef": "Standard Methods 2340C / 3500-Ca B",
+    "aliases": ["hardness titration", "EDTA hardness", "calcium hardness", "magnesium hardness"],
+    "frequency": "Daily on softener outlet and boiler makeup; per shift where hardness breakthrough is a risk",
+    "holdingTime": "Analyse within 7 days; store at 4 °C",
+    "equipment": [
+      "Burette or Hach digital titrator",
+      "250 mL Erlenmeyer flasks (two — one per titration)",
+      "100 mL pipette or graduated cylinder",
+      "Magnetic stirrer (recommended for seeing the endpoint clearly)"
     ],
-    "safetyNotes": ["NaOH is caustic — wear gloves and eye protection."],
+    "reagents": [
+      "EDTA titrant, 0.01 mol/L (standardised — note the titre in mg CaCO3 per mL)",
+      "Buffer solution, pH 10 (ammonia/ammonium chloride) — for total hardness",
+      "Eriochrome Black T indicator (ManVer or powder) — for total hardness",
+      "1 N sodium hydroxide — for calcium hardness",
+      "Murexide (calcium) indicator — for calcium hardness"
+    ],
+    "interferences": [
+      "Iron, manganese, copper, and aluminium can cause a fading or indistinct endpoint — add an inhibitor (e.g. Hach Inhibitor Solution) if metals are present.",
+      "Free chlorine can bleach the indicator — neutralise with a drop of thiosulfate.",
+      "Titrating too slowly at high pH lets calcium carbonate precipitate; complete each titration within 5 minutes of adding buffer."
+    ],
+    "steps": [
+      "TOTAL HARDNESS — measure exactly 100 mL of sample into a flask (use 50 mL and note it if hardness is expected above 300 mg/L).",
+      "Add 1-2 mL of pH 10 buffer solution and swirl. Work in a ventilated area; the buffer has a strong ammonia odour.",
+      "Add the Eriochrome Black T indicator. The solution turns wine-red if hardness is present.",
+      "Titrate with EDTA, swirling continuously, until the colour changes from wine-red through purple to a clear blue with no red tint remaining. Add the last few drops slowly, allowing 3-5 seconds between drops.",
+      "Record the EDTA volume used for total hardness.",
+      "CALCIUM HARDNESS — measure a fresh 100 mL sample into a second clean flask.",
+      "Add 1-2 mL of 1 N sodium hydroxide to raise the pH to 12-13. At this pH magnesium precipitates as hydroxide and is excluded from the titration.",
+      "Add murexide (calcium) indicator; the solution turns pink.",
+      "Titrate with EDTA until the colour changes from pink to purple. Complete this titration promptly — the endpoint fades on standing.",
+      "Record the EDTA volume used for calcium hardness.",
+      "Enter both titrant volumes, the sample volume, and the EDTA titre into the Hardness calculator. Magnesium hardness is returned by difference (total − calcium).",
+      "Log all three results plus the sample point and time in the Logbook. A rising trend on a softener outlet is an early warning of resin exhaustion."
+    ],
+    "qualityControl": [
+      "Run a known hardness standard with each batch; recovery should be within about ±5 % of the assigned value.",
+      "Run a duplicate on every 10th sample.",
+      "Run a distilled water blank — it should require essentially no titrant.",
+      "For softened water, any detectable hardness above the site limit should be repeated immediately on a fresh sample before raising an alarm."
+    ],
+    "troubleshooting": [
+      "Endpoint is grey/muddy rather than clear blue: metal interference — add inhibitor and repeat.",
+      "Colour reverts to red shortly after the endpoint: hardness is still being released; titrate more slowly and confirm the buffer volume.",
+      "Very sharp endpoint at almost zero titrant on softened water: confirm with a standard that the indicator and titrant are both still good."
+    ],
+    "safetyNotes": [
+      "Sodium hydroxide is caustic and causes severe burns — gloves and eye protection required.",
+      "pH 10 buffer releases ammonia vapour — use in a fume hood or well-ventilated area.",
+      "Avoid skin contact with indicator powders."
+    ],
     "calcRef": "water-hardness"
   },
   {
-    "id": "water-chlorine-dpd",
+    "id": "water-chlorine-hach-8021",
     "domain": "water",
-    "title": "Chlorine Residual — DPD Colorimetric Method",
-    "methodRef": "Standard Methods 4500-Cl G",
-    "aliases": ["chlorine residual", "DPD test", "free chlorine"],
-    "equipment": ["DPD colorimeter or comparator", "Sample cells"],
-    "reagents": ["DPD reagent (powder pillow or tablet)"],
-    "steps": [
-      "Rinse the sample cell with sample water.",
-      "Fill the sample cell to the fill line with sample.",
-      "Add the DPD reagent, cap, and invert gently to mix (do not shake vigorously).",
-      "Read the result within 1 minute on the colorimeter (color fades over time).",
-      "If the sample was diluted to fit the instrument's range, apply the dilution factor using the Chlorine Residual calculator."
+    "title": "Chlorine, Free & Total — Hach DPD (DR6000)",
+    "methodRef": "Hach Method 8021 (free) / 8167 (total) — DPD colorimetric; equivalent to SM 4500-Cl G",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8021 (free chlorine) / Method 8167 (total chlorine) — DPD powder pillows",
+    "range": "0.02 – 2.00 mg/L Cl2 (10 mL cell); dilute for higher concentrations",
+    "sampleVolume": "10 mL sample cell",
+    "reactionTime": "Free: read within 1 minute. Total: 3 minute reaction, read within 3 minutes after",
+    "wavelength": "530 nm (set automatically by the stored program)",
+    "aliases": ["chlorine residual", "DPD test", "free chlorine", "total chlorine", "hach 8021", "DR6000 chlorine"],
+    "frequency": "Per shift minimum on treated water; more often during disinfection upsets",
+    "holdingTime": "ANALYSE IMMEDIATELY — chlorine is unstable. Do not store or transport samples.",
+    "equipment": [
+      "Hach DR6000 spectrophotometer",
+      "Matched 10 mL sample cells (round, 1 inch) — use the same pair every time",
+      "Lint-free wipe / lens tissue",
+      "Sample bottle for collection"
     ],
-    "safetyNotes": ["Avoid skin contact with DPD reagent."],
+    "reagents": [
+      "DPD Free Chlorine Powder Pillows, 10 mL",
+      "DPD Total Chlorine Powder Pillows, 10 mL",
+      "Deionised water for the blank (if a reagent blank is required)"
+    ],
+    "interferences": [
+      "Monochloramine gives a slowly developing colour in the free chlorine test — read within 1 minute to minimise this.",
+      "Oxidised manganese and chromium give a positive interference.",
+      "Sample temperature and pH outside the method's range shift results; samples should be near ambient temperature.",
+      "Excess chlorine (above range) can bleach the pink colour and give a falsely LOW or even near-zero reading — always dilute and re-test if a high-chlorine sample reads unexpectedly low."
+    ],
+    "steps": [
+      "Collect the sample in a clean bottle, filling gently and completely to avoid agitating off chlorine. Do not use a sample that has been standing.",
+      "Power on the DR6000 and let it complete its self-check. Select the stored program for the test being run (free or total chlorine). Confirm the program number on the instrument — program numbers vary by firmware version; the Hach method number is the stable reference.",
+      "PREPARE THE BLANK: fill a clean sample cell to the 10 mL mark with the untreated sample.",
+      "Wipe the outside of the cell with a lint-free wipe. Fingerprints, droplets, and scratches all bias the reading.",
+      "Insert the blank into the cell holder with the orientation/fill mark aligned consistently, close the lid, and press ZERO. The display should read 0.00 mg/L.",
+      "PREPARE THE SAMPLE: fill the second cell to the 10 mL mark with sample.",
+      "Add the contents of one DPD powder pillow (free or total, as appropriate). Cap the cell.",
+      "Swirl or invert gently for about 20 seconds to dissolve. Do not shake vigorously — this drives off chlorine and traps bubbles. A pink colour indicates chlorine is present. Some undissolved powder is normal and does not affect the result.",
+      "FREE CHLORINE: start the instrument timer and read immediately — the reading must be taken within 1 minute of adding reagent.",
+      "TOTAL CHLORINE: start the 3-minute instrument timer and read when it expires; take the reading within 3 minutes after the timer ends.",
+      "Wipe the prepared cell, insert it in the same orientation as the blank, close the lid, and press READ. Record the result in mg/L as Cl2.",
+      "If the reading is over range, dilute a fresh sample with a known ratio of deionised water, re-run the test, and use the Chlorine Residual calculator to apply the dilution factor.",
+      "COMBINED CHLORINE (chloramines), if needed: run both tests on the same sample and subtract — combined = total − free.",
+      "Empty, rinse, and dry both cells immediately. DPD stains cells over time; clean with a mild acid rinse periodically.",
+      "Log the result, sample point, and time in the Logbook, and flag any result outside the target residual band."
+    ],
+    "qualityControl": [
+      "Run a blank check periodically using deionised water plus reagent — should read near 0.00 mg/L.",
+      "Verify performance against a Hach chlorine standard (e.g. a sealed Gelex or a prepared standard) on the schedule set by your QA programme.",
+      "Run duplicates on one sample per shift; agreement should be well within the method's stated precision.",
+      "Keep the matched cell pair together and marked — mixing cells between the blank and sample introduces optical error."
+    ],
+    "troubleshooting": [
+      "Result reads 0.00 on a sample known to be chlorinated: suspect over-range bleaching. Dilute and re-test.",
+      "Erratic or drifting readings: check for bubbles, scratched or dirty cells, or an unstable lamp — let the instrument warm up fully.",
+      "Persistent high blank: cells are contaminated with DPD residue; clean thoroughly or replace.",
+      "Colour develops slowly and keeps rising on the free test: chloramines are present — the total chlorine test will show the difference."
+    ],
+    "safetyNotes": [
+      "DPD reagent is a skin and eye irritant — avoid contact and wash hands after handling.",
+      "Dispose of spent samples and reagent per site chemical waste procedure.",
+      "The definitive reference is the Hach method sheet supplied with your reagent lot; this SOP is a bench summary."
+    ],
     "calcRef": "water-chlorine-residual"
   },
   {
     "id": "water-turbidity-nephelometric",
     "domain": "water",
     "title": "Turbidity — Nephelometric Method",
-    "methodRef": "Standard Methods 2130B",
-    "aliases": ["turbidity", "NTU", "nephelometer"],
-    "equipment": ["Nephelometer/turbidimeter", "Sample cells", "Formazin or StablCal standards for calibration"],
-    "reagents": ["Calibration standards (per instrument manual)"],
-    "steps": [
-      "Verify instrument calibration with known standards; recalibrate if out of tolerance.",
-      "Gently invert the sample to homogenize without introducing air bubbles.",
-      "Wipe the sample cell with a lint-free cloth and apply optical coupling fluid/silicone oil if required by the instrument.",
-      "Insert the cell into the instrument and read turbidity in NTU.",
-      "Take multiple readings and average if the reading is unstable."
+    "methodRef": "Standard Methods 2130B / USEPA 180.1",
+    "aliases": ["turbidity", "NTU", "nephelometer", "clarity"],
+    "frequency": "Continuous on-line where fitted, plus bench verification per shift on raw, settled, and filtered water",
+    "holdingTime": "Analyse immediately; if unavoidable, store in the dark up to 24 h and bring to room temperature before reading",
+    "equipment": [
+      "Bench or portable nephelometric turbidimeter (e.g. Hach TL2300 / 2100Q)",
+      "Matched sample cells with caps",
+      "Lint-free cloth and silicone oil",
+      "StablCal or formazin calibration standards"
     ],
-    "safetyNotes": [],
+    "reagents": ["StablCal stabilised formazin standards (calibration set)", "Turbidity-free dilution water"],
+    "interferences": [
+      "Air bubbles read as turbidity — the single most common source of false high results.",
+      "Scratched, dirty, or fingerprinted cells scatter light and bias results high.",
+      "True colour in the sample absorbs light and can bias results LOW.",
+      "Settling of large particles during the reading gives a falling, unstable value."
+    ],
+    "steps": [
+      "Verify the instrument calibration is current. Perform a full calibration with StablCal standards at the frequency required by your QA programme, and a verification check daily.",
+      "Collect the sample in a clean container, filling gently to minimise entrained air.",
+      "Invert the sample slowly several times to homogenise — do not shake, which introduces bubbles.",
+      "Let the sample stand briefly (typically 1-5 minutes) so bubbles rise out, but not long enough for solids to settle.",
+      "Rinse the sample cell twice with the sample, then fill to the mark and cap.",
+      "Wipe the cell with a lint-free cloth. Apply a thin film of silicone oil and wipe with the oiling cloth to mask minor scratches — this is required for low-level readings.",
+      "Insert the cell in the instrument with the orientation mark aligned the same way every time and close the light shield.",
+      "Read and record the value in NTU. If the reading drifts, note whether it is rising (bubbles) or falling (settling) and repeat as needed.",
+      "For very low turbidity (filtered water), take three readings and average, or use the instrument's signal-averaging mode.",
+      "Log the result against the sample point and compare to the site's filter performance target — a rising filtered-water turbidity trend is an early indicator of filter breakthrough.",
+      "Note: the DR6000 can read attenuated-radiation turbidity (Hach Method 8237, in FAU) for process checks, but a dedicated nephelometer is required for regulatory NTU reporting."
+    ],
+    "qualityControl": [
+      "Run a daily calibration verification with a mid-range StablCal standard; record pass/fail.",
+      "Run a turbidity-free water blank to confirm the low end reads near zero.",
+      "Replace scratched cells immediately — they cannot be corrected with oil.",
+      "Track calibration dates and standard expiry in the Logbook."
+    ],
+    "troubleshooting": [
+      "Reading climbs steadily: air bubbles — degas the sample and re-read.",
+      "Reading falls steadily: solids settling — re-invert and read promptly.",
+      "Filtered water reads higher than expected: check the cell for scratches and confirm with a second clean cell.",
+      "All readings biased high after a standard change: re-verify the calibration and check standard expiry."
+    ],
+    "safetyNotes": ["Formazin stock standards are a suspected carcinogen — use pre-made StablCal standards where possible and avoid preparing formazin from raw materials."],
     "calcRef": null
   },
   {
     "id": "water-ph-electrometric",
     "domain": "water",
     "title": "pH — Electrometric Method",
-    "methodRef": "Standard Methods 4500-H+B",
-    "aliases": ["pH meter", "pH calibration"],
-    "equipment": ["pH meter and probe", "Buffer solutions (e.g. 4.00, 7.00, 10.00)"],
-    "reagents": ["pH buffer solutions"],
-    "steps": [
-      "Calibrate the meter using at least two buffers that bracket the expected sample pH.",
-      "Rinse the probe with distilled water between buffers and samples.",
-      "Immerse the probe in the sample, gently stir, and allow the reading to stabilize.",
-      "Record the pH and sample temperature (pH is temperature-dependent).",
-      "Rinse and store the probe per manufacturer instructions (typically in storage solution, not dry)."
+    "methodRef": "Standard Methods 4500-H+ B",
+    "aliases": ["pH meter", "pH calibration", "hydrogen ion"],
+    "frequency": "Per shift on all key sample points; calibrate the meter daily before first use",
+    "holdingTime": "ANALYSE IMMEDIATELY — pH changes on standing as CO2 equilibrates",
+    "equipment": [
+      "pH meter with temperature compensation (ATC)",
+      "Combination pH electrode in good condition",
+      "Beakers for buffers and sample",
+      "Wash bottle with distilled/deionised water",
+      "Electrode storage solution (never plain distilled water)"
     ],
-    "safetyNotes": [],
+    "reagents": ["pH 4.00, 7.00, and 10.00 buffer solutions (in date)", "Electrode cleaning solution", "Electrode storage solution (KCl)"],
+    "interferences": [
+      "Temperature affects both the electrode response and the true pH of the sample — always use ATC and record the temperature.",
+      "A dried-out or coated electrode gives a sluggish, drifting reading.",
+      "Low-ionic-strength water (condensate, demineralised water) is difficult to measure accurately — readings drift and require a specialised low-conductivity electrode.",
+      "Sodium error at high pH (> 12) biases readings low with older glass electrodes."
+    ],
+    "steps": [
+      "Inspect the electrode: the bulb should be clean and free of cracks, the fill solution at the correct level, and the junction unblocked.",
+      "Rinse the electrode with distilled water and blot gently with a lint-free tissue — never wipe hard, which creates a static charge.",
+      "CALIBRATE with at least two buffers that bracket the expected sample pH (typically 7.00 first, then 4.00 or 10.00).",
+      "Allow the reading to stabilise fully in each buffer before accepting the calibration point.",
+      "Check the slope reported by the meter. A slope of 95-105 % is normally acceptable; below that, clean or replace the electrode.",
+      "Rinse the electrode between every buffer and every sample.",
+      "MEASURE: immerse the electrode in the sample so the bulb and junction are fully covered. Stir gently and consistently, or use a stirrer at a constant speed.",
+      "Allow the reading to stabilise (the meter's stability indicator should confirm), then record pH to two decimal places along with the sample temperature.",
+      "Rinse the electrode and return it to storage solution. Never store the electrode dry or in distilled water — both damage the junction.",
+      "Log the pH, temperature, sample point, and the calibration slope from that day in the Logbook."
+    ],
+    "qualityControl": [
+      "Verify calibration against a third buffer (a check standard) after calibrating — it should read within ±0.05 pH of nominal.",
+      "Record the electrode slope daily; a downward trend predicts electrode failure before it causes bad data.",
+      "Re-calibrate immediately if the check standard fails, the electrode is replaced, or a large temperature change occurs.",
+      "Replace buffers on schedule — opened buffer bottles absorb CO2 and drift, especially pH 10."
+    ],
+    "troubleshooting": [
+      "Slow, drifting reading: clean the electrode, check the fill level, and confirm the junction is not blocked.",
+      "Slope out of range: soak the electrode in cleaning solution, then in storage solution, and re-calibrate. If it still fails, replace it.",
+      "Noisy reading in demineralised water or condensate: use a low-ionic-strength electrode and a grounded, stirred cell.",
+      "Reading offset in all buffers: check the meter's calibration has actually been saved and that ATC is connected."
+    ],
+    "safetyNotes": ["Buffers are generally low hazard but should not be returned to the stock bottle after use — always pour a fresh aliquot into a beaker."],
     "calcRef": null
   },
   {
     "id": "water-tds-sm2540c",
     "domain": "water",
-    "title": "Total Dissolved Solids — Conductivity/Gravimetric",
-    "methodRef": "Standard Methods 2540C",
-    "aliases": ["TDS", "conductivity"],
-    "equipment": ["Conductivity meter", "Drying oven and evaporating dish (gravimetric method)", "Analytical balance"],
-    "reagents": [],
-    "steps": [
-      "Quick estimate: measure sample conductivity and apply the site-specific conversion factor using the TDS calculator.",
-      "Gravimetric (reference) method: filter a measured sample volume through a glass fiber filter.",
-      "Evaporate the filtrate in a pre-weighed dish and dry at 180°C to constant weight.",
-      "Calculate TDS (mg/L) from the weight gain divided by the sample volume.",
-      "Periodically verify the conductivity conversion factor against the gravimetric result."
+    "title": "Total Dissolved Solids — Conductivity & Gravimetric",
+    "methodRef": "Standard Methods 2540C (gravimetric) / 2510B (conductivity)",
+    "aliases": ["TDS", "conductivity", "dissolved solids", "specific conductance"],
+    "frequency": "Conductivity per shift; gravimetric TDS monthly (or per schedule) to verify the conversion factor",
+    "holdingTime": "7 days at 4 °C for gravimetric; conductivity best measured fresh at a known temperature",
+    "equipment": [
+      "Conductivity meter with temperature compensation",
+      "Drying oven capable of 180 ± 2 °C (gravimetric)",
+      "Evaporating dish (porcelain or platinum)",
+      "Analytical balance readable to 0.1 mg",
+      "Desiccator with active desiccant",
+      "Glass fibre filter and filtration apparatus"
     ],
-    "safetyNotes": ["Use oven mitts and let dishes cool in a desiccator before weighing."],
+    "reagents": ["Conductivity calibration standard (e.g. 1413 µS/cm KCl)", "Deionised water"],
+    "interferences": [
+      "The conductivity-to-TDS factor is water-specific — a factor derived for one source is not valid for another.",
+      "Temperature strongly affects conductivity (roughly 2 % per °C); always use temperature compensation.",
+      "Highly alkaline or acidic samples deviate from the typical factor.",
+      "In the gravimetric method, hygroscopic residues regain moisture rapidly — weigh immediately after desiccation."
+    ],
+    "steps": [
+      "ROUTINE (CONDUCTIVITY) METHOD — calibrate the conductivity meter against a standard solution and verify it reads within tolerance.",
+      "Rinse the probe with deionised water, then with a small volume of sample.",
+      "Immerse the probe fully, ensuring no bubbles are trapped in the cell, and allow the reading to stabilise.",
+      "Record the conductivity in µS/cm and the sample temperature.",
+      "Enter the conductivity and your site-specific factor into the TDS from Conductivity calculator. The 0.65 default is a starting point only — it must be verified gravimetrically for your water.",
+      "REFERENCE (GRAVIMETRIC) METHOD — heat a clean evaporating dish at 180 °C for 1 h, cool in a desiccator, and weigh to constant mass. Record the tare.",
+      "Filter a measured volume of well-mixed sample through a glass fibre filter to remove suspended solids.",
+      "Transfer a measured volume of the filtrate to the tared dish and evaporate to dryness on a water bath or in the oven.",
+      "Dry the dish and residue at 180 °C for at least 1 h.",
+      "Cool in a desiccator to room temperature and weigh promptly. Repeat the drying/cooling/weighing cycle until successive masses agree within 0.5 mg (constant mass).",
+      "Calculate TDS (mg/L) = (final mass − tare mass in mg) × 1000 / sample volume in mL.",
+      "DERIVE THE FACTOR: divide the gravimetric TDS (mg/L) by the conductivity (µS/cm) measured on the same sample. Update the factor stored in the calculator and record the change in the Logbook."
+    ],
+    "qualityControl": [
+      "Verify conductivity calibration daily against a standard; record the reading and any adjustment.",
+      "Run gravimetric duplicates; agreement should be within about 5 %.",
+      "Re-derive the conductivity-to-TDS factor whenever the source water changes character (seasonal shifts, new source, process change).",
+      "Verify the oven temperature with an independent thermometer periodically."
+    ],
+    "troubleshooting": [
+      "Conductivity reads low and slow: probe fouled or bubbles trapped in the cell — clean and re-immerse.",
+      "Gravimetric result will not reach constant mass: the residue is hygroscopic; extend the drying time and minimise time outside the desiccator.",
+      "Large mismatch between conductivity estimate and gravimetric result: the conversion factor is out of date for this water."
+    ],
+    "safetyNotes": [
+      "Use tongs and heat-resistant gloves for hot dishes; a 180 °C dish looks identical to a cold one.",
+      "Never place a hot dish directly on the balance — always cool in a desiccator first."
+    ],
     "calcRef": "water-tds-conductivity"
+  },
+  {
+    "id": "water-aluminium-hach-8012",
+    "domain": "water",
+    "title": "Aluminium, Residual — Hach Aluminon (DR6000)",
+    "methodRef": "Hach Method 8012 — Aluminon colorimetric",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8012 — Aluminon, powder pillows",
+    "range": "0.008 – 0.800 mg/L Al",
+    "sampleVolume": "Per the Hach procedure for this method (verify on the instrument program)",
+    "aliases": ["aluminium", "aluminum", "residual alum", "coagulant carryover", "hach 8012"],
+    "frequency": "Daily on filtered/treated water where alum or PAC coagulant is dosed",
+    "holdingTime": "Analyse promptly; if storage is needed, acidify to pH < 2 with nitric acid (total aluminium only)",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched sample cells", "Lint-free wipes", "Timer (instrument built-in)"],
+    "reagents": ["Aluminon reagent powder pillows / AluVer reagent set", "Ascorbic acid powder pillows (interference removal)", "Deionised water"],
+    "interferences": [
+      "Iron interferes strongly — the ascorbic acid step is included specifically to suppress it and must not be skipped.",
+      "Fluoride and polyphosphates suppress colour development and bias results LOW.",
+      "The colour is temperature-sensitive; the blank and sample must be at the same temperature."
+    ],
+    "steps": [
+      "Collect a representative sample of filtered/treated water in a clean container.",
+      "Select the stored program for aluminium (Hach Method 8012) on the DR6000 and confirm the program matches the reagent set in use.",
+      "Prepare the sample and blank exactly as directed by the Hach method sheet for your reagent set, including the ascorbic acid interference-removal step.",
+      "Use the instrument's built-in timer for each reaction period — do not estimate the timing by eye.",
+      "Wipe both cells with a lint-free wipe before every insertion; at this concentration range, fingerprints matter.",
+      "Zero the instrument on the blank, then read the prepared sample and record the result in mg/L Al.",
+      "Compare the result to your treated-water target. Rising residual aluminium usually signals coagulant overdose or pH drift outside the coagulation optimum — re-check the jar test and coagulation pH.",
+      "Log the result, the coagulant dose in use, and the coagulation pH together in the Logbook so the relationship is visible over time."
+    ],
+    "qualityControl": [
+      "Run a reagent blank with each batch of samples.",
+      "Verify against a prepared aluminium standard on the QA schedule; recovery should fall within the method's stated limits.",
+      "Run a duplicate on every 10th sample.",
+      "Confirm reagent lot and expiry are recorded."
+    ],
+    "troubleshooting": [
+      "Unexpectedly low result on a known-high sample: check for fluoride/polyphosphate interference and confirm the reaction timing.",
+      "High blank: cells are contaminated — clean thoroughly with acid rinse.",
+      "Poor reproducibility: verify both cells are at the same temperature and the timer was used consistently."
+    ],
+    "safetyNotes": [
+      "Aluminon reagent is an irritant — avoid skin and eye contact.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
   },
   {
     "id": "water-jar-test",
     "domain": "water",
-    "title": "Jar Test Procedure",
-    "methodRef": "Standard bench jar test practice",
-    "aliases": ["jar test", "coagulation test"],
-    "equipment": ["Jar test apparatus (multi-paddle stirrer)", "Turbidimeter", "1-2 L sample jars"],
-    "reagents": ["Coagulant stock solution", "Polymer stock solution (if used)"],
-    "steps": [
-      "Fill each jar with an equal volume of raw water sample.",
-      "Add increasing coagulant doses to each jar (e.g. one control + 4-6 test doses).",
-      "Rapid mix (~100 rpm) for 1 minute to disperse coagulant.",
-      "Slow mix (~20-30 rpm) for 15-20 minutes to promote floc formation.",
-      "Let settle undisturbed for 30 minutes.",
-      "Record floc appearance and measure supernatant turbidity for each jar.",
-      "Enter dose/turbidity pairs into the Jar Test calculator to identify the optimum dose."
+    "title": "Jar Test — Coagulant Dose Optimisation",
+    "methodRef": "Standard bench jar test practice (ASTM D2035 basis)",
+    "aliases": ["jar test", "coagulation test", "dose optimisation", "flocculation test"],
+    "frequency": "Weekly, and whenever raw water quality shifts (rain event, turbidity spike, temperature change, source change)",
+    "equipment": [
+      "Jar test apparatus (gang stirrer, typically 6 paddles)",
+      "1 or 2 L square/round jars, matched set",
+      "Turbidimeter",
+      "pH meter",
+      "Pipettes/syringes for accurate dose addition",
+      "Stopwatch (or the stirrer's programmable timer)"
     ],
-    "safetyNotes": ["Follow the coagulant/polymer SDS for handling precautions."],
+    "reagents": [
+      "Coagulant stock solution of accurately known strength (prepare fresh; note the concentration)",
+      "Polymer/flocculant aid stock solution (if used)",
+      "pH adjustment chemicals as used on the plant (lime, caustic, acid)"
+    ],
+    "interferences": [
+      "Stale stock solutions give misleading doses — prepare coagulant stock fresh, especially dilute solutions.",
+      "Raw water that has stood or warmed does not represent plant conditions; test as soon after collection as possible.",
+      "Uneven paddle speeds across jars invalidate the comparison — verify all paddles are turning at the same rate."
+    ],
+    "steps": [
+      "Collect a large, well-mixed raw water sample from the plant intake at the point representative of current conditions.",
+      "Record the raw water turbidity, pH, temperature, and alkalinity before starting — these drive interpretation of the result.",
+      "Fill each jar with an identical measured volume of raw water (typically 1 or 2 L).",
+      "Plan the dose series: include one blank/control (no coagulant) and 5 doses bracketing the current plant dose — for example, if the plant runs 30 mg/L, test 15, 22, 30, 38, 45 mg/L.",
+      "Calculate the volume of stock solution needed for each jar to achieve the target mg/L and draw it up in advance so all jars can be dosed simultaneously.",
+      "Start the stirrers at RAPID MIX (typically ~100-150 rpm) and add all doses at the same instant. Rapid mix for 1 minute.",
+      "Reduce to SLOW MIX (typically ~20-40 rpm) for 15-20 minutes to build floc. Observe and record floc appearance during this phase: time to first visible floc, floc size, and whether the floc is compact or fluffy.",
+      "If a polymer aid is being evaluated, add it partway through the slow mix as the plant would dose it, and note the addition point.",
+      "Stop the stirrers, lift the paddles clear, and let the jars settle undisturbed for 30 minutes. Record the settling behaviour — fast, clean settling versus slow, cloudy settling is as informative as the final number.",
+      "Withdraw supernatant from a consistent depth in each jar (typically 2-3 cm below the surface) using a pipette or siphon, taking care not to disturb the settled sludge.",
+      "Measure and record turbidity for each jar, and pH for at least the best two jars.",
+      "Enter the dose/turbidity pairs into the Jar Test calculator to identify the lowest-turbidity dose.",
+      "Interpret before acting: the optimum operating dose is usually the LOWEST dose that reaches acceptable turbidity, not necessarily the absolute minimum turbidity — the last few mg/L often buys very little and costs chemical.",
+      "Check the coagulation pH of the winning jar. If it falls outside the coagulant's optimum range, the dose result may be masking a pH problem; re-run with pH adjustment.",
+      "Use the Coagulant Dose Scale-Up calculator to convert the chosen mg/L dose to kg/day at current plant flow, then the Feed Pump Rate calculator for the pump setting.",
+      "Log the full jar test — raw water conditions, dose series, turbidity results, chosen dose, and any plant change made — in the Logbook."
+    ],
+    "qualityControl": [
+      "Always include a no-coagulant control jar to confirm how much settling occurs without treatment.",
+      "Verify all paddles rotate at the same speed before starting.",
+      "Record the stock solution concentration and preparation date on every jar test record.",
+      "Repeat the test if the turbidity results do not form a sensible curve (a proper series should show a clear minimum, not random scatter)."
+    ],
+    "troubleshooting": [
+      "No clear minimum in the curve: the dose range may be entirely too low or too high — widen the series and repeat.",
+      "All jars settle poorly including high doses: check coagulation pH and alkalinity; insufficient alkalinity prevents floc formation.",
+      "Pinpoint floc that will not grow: consider a flocculant aid, or a longer/gentler slow-mix phase.",
+      "Best jar in the test is still above target turbidity: the issue may be filtration rather than coagulation."
+    ],
+    "safetyNotes": [
+      "Follow the safety data sheet for each coagulant and polymer — many are acidic and corrosive.",
+      "Polymer solutions make floors extremely slippery; clean spills immediately.",
+      "Wear eye protection when preparing and dispensing stock solutions."
+    ],
     "calcRef": "water-jar-test"
   },
   {
     "id": "water-feed-pump-calibration",
     "domain": "water",
-    "title": "Chemical Feed Pump Calibration",
-    "methodRef": "Standard bench calibration practice",
-    "aliases": ["pump calibration", "feed pump drawdown"],
-    "equipment": ["Graduated drawdown cylinder/tube", "Stopwatch"],
-    "reagents": [],
-    "steps": [
-      "Close the suction valve from the day tank and open the calibration column valve so the pump draws from the graduated column.",
-      "Record the starting liquid level in the column.",
-      "Run the pump for a measured time interval (e.g. 1-3 minutes) at the current stroke/speed setting.",
-      "Record the ending liquid level and calculate the volume drawn down.",
-      "Convert the drawdown volume and time into a feed rate, and compare to the target rate from the Feed Pump Rate calculator.",
-      "Adjust stroke length/speed and repeat until the measured rate matches the target."
+    "title": "Chemical Feed Pump Calibration (Drawdown)",
+    "methodRef": "Standard bench/field calibration practice",
+    "aliases": ["pump calibration", "feed pump drawdown", "dosing pump check", "calibration column"],
+    "frequency": "Monthly per pump, and after any stroke/speed adjustment, pump repair, or chemical change",
+    "equipment": [
+      "Graduated calibration column (drawdown cylinder) plumbed to the pump suction",
+      "Stopwatch",
+      "PPE appropriate to the chemical being pumped",
+      "Logbook / calibration record sheet"
     ],
-    "safetyNotes": ["Wear appropriate PPE for the chemical in use."],
+    "reagents": [],
+    "interferences": [
+      "Air in the suction line gives a falsely high drawdown — bleed the line before starting.",
+      "A partially blocked foot valve or fouled check valve gives inconsistent results between runs.",
+      "Back-pressure differences between the calibration column and the normal suction source can shift the measured rate."
+    ],
+    "steps": [
+      "Confirm the chemical, its concentration, and its specific gravity before starting — the calculated feed rate depends on all three.",
+      "Put on the PPE specified for the chemical (minimum: goggles, gloves, apron).",
+      "Verify the calibration column is clean, undamaged, and graduated in a readable unit (mL or L).",
+      "Isolate the pump suction from the day tank and open the valve so the pump draws from the calibration column.",
+      "Run the pump briefly to fill the suction line and expel air, then let the level settle.",
+      "Record the starting level in the column.",
+      "Start the pump and the stopwatch simultaneously. Run for a measured interval long enough for a readable drawdown — typically 1-5 minutes depending on pump size.",
+      "Stop the pump and stopwatch together and record the ending level.",
+      "Calculate the volume drawn down and convert to a rate: volume (L) ÷ time (min) × 1440 = L/day.",
+      "Repeat the run at least twice more. The three runs should agree closely; if they do not, investigate air, valve, or column issues before accepting a result.",
+      "Average the acceptable runs and compare to the target feed rate from the Chemical Feed Pump Rate calculator.",
+      "Adjust the stroke length and/or speed setting and repeat until the measured rate matches the target within your site's tolerance.",
+      "Restore the valve line-up: close the calibration column valve and reopen the day tank suction. CONFIRM the pump is drawing from the tank again before leaving.",
+      "Record in the Logbook: pump ID, chemical, date, measured rates for each run, final setting, and target rate. This record is the evidence that dosing is verified."
+    ],
+    "qualityControl": [
+      "Require three consistent runs before accepting a calibration.",
+      "Track the setting-versus-rate relationship over time — a pump that needs progressively higher settings for the same output is wearing out.",
+      "Re-verify immediately after any maintenance on the pump, valves, or suction line."
+    ],
+    "troubleshooting": [
+      "Drawdown varies widely between runs: air in the line, sticking check valve, or a leaking fitting.",
+      "Pump will not reach target rate at maximum setting: worn diaphragm/valves, excessive discharge pressure, or a blocked injection point.",
+      "Level in the column does not move: pump is air-locked or the suction valve line-up is wrong."
+    ],
+    "safetyNotes": [
+      "Never leave the pump drawing from the calibration column — the column will run dry and air-lock the pump, interrupting treatment.",
+      "Assume the line is under pressure; relieve pressure before breaking any connection.",
+      "Have the chemical's safety data sheet and spill kit accessible before starting."
+    ],
     "calcRef": "water-feed-pump-rate"
   }
 ]

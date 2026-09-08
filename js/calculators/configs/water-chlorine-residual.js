@@ -3,7 +3,7 @@ export default {
   domain: 'water',
   title: 'Chlorine Residual (Dilution Correction)',
   subtitle: 'Corrects DPD colorimeter reading for sample dilution',
-  procedureRef: 'water-chlorine-dpd',
+  procedureRef: 'water-chlorine-hach-8021',
   inputs: [
     { id: 'instrumentReading', label: 'Instrument Reading', unit: 'mg/L' },
     { id: 'dilutionFactor', label: 'Dilution Factor', default: 1 },

@@ -6,16 +6,16 @@ export default {
   procedureRef: 'boiler-sulfite-sm4500so3',
   inputs: [
     { id: 'targetResidual', label: 'Target Sulfite Residual (as SO3)', unit: 'mg/L' },
-    { id: 'flowRateMGD', label: 'Feedwater Flow', unit: 'MGD' },
-    { id: 'productPurity', label: 'Product Purity', unit: '%', default: 100 },
+    { id: 'flowRate', label: 'Feedwater Flow', unit: 'm³/day' },
+    { id: 'productPurity', label: 'Product Purity (active %)', unit: '%', default: 100 },
   ],
-  compute({ targetResidual, flowRateMGD, productPurity }) {
+  compute({ targetResidual, flowRate, productPurity }) {
     if (!(productPurity > 0)) throw new Error('Product purity must be greater than 0');
-    const lbsPerDayActive = targetResidual * flowRateMGD * 8.34;
-    const lbsPerDayProduct = lbsPerDayActive / (productPurity / 100);
+    const kgPerDayActive = (targetResidual * flowRate) / 1000;
+    const kgPerDayProduct = kgPerDayActive / (productPurity / 100);
     return {
-      'Active Chemical Required': { value: lbsPerDayActive, unit: 'lbs/day' },
-      'Product Required': { value: lbsPerDayProduct, unit: 'lbs/day' },
+      'Active Chemical Required': { value: kgPerDayActive, unit: 'kg/day', decimals: 3 },
+      'Product Required': { value: kgPerDayProduct, unit: 'kg/day', decimals: 3 },
     };
   },
 };

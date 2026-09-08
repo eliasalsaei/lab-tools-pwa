@@ -3,19 +3,20 @@ export default {
   domain: 'boiler',
   title: 'Phosphate Residual Dosing',
   subtitle: 'Chemical feed required to hit a target phosphate residual',
-  procedureRef: 'boiler-phosphate-sm4500p',
+  procedureRef: 'boiler-phosphate-hach-8048',
   inputs: [
     { id: 'targetResidual', label: 'Target Phosphate Residual', unit: 'mg/L' },
-    { id: 'flowRateMGD', label: 'Feed/Blowdown Flow', unit: 'MGD' },
-    { id: 'productPurity', label: 'Product Purity', unit: '%', default: 100 },
+    { id: 'flowRate', label: 'Feed/Blowdown Flow', unit: 'm³/day' },
+    { id: 'productPurity', label: 'Product Purity (active %)', unit: '%', default: 100 },
   ],
-  compute({ targetResidual, flowRateMGD, productPurity }) {
+  compute({ targetResidual, flowRate, productPurity }) {
     if (!(productPurity > 0)) throw new Error('Product purity must be greater than 0');
-    const lbsPerDayActive = targetResidual * flowRateMGD * 8.34;
-    const lbsPerDayProduct = lbsPerDayActive / (productPurity / 100);
+    // 1 mg/L = 1 g/m³
+    const kgPerDayActive = (targetResidual * flowRate) / 1000;
+    const kgPerDayProduct = kgPerDayActive / (productPurity / 100);
     return {
-      'Active Chemical Required': { value: lbsPerDayActive, unit: 'lbs/day' },
-      'Product Required': { value: lbsPerDayProduct, unit: 'lbs/day' },
+      'Active Chemical Required': { value: kgPerDayActive, unit: 'kg/day', decimals: 3 },
+      'Product Required': { value: kgPerDayProduct, unit: 'kg/day', decimals: 3 },
     };
   },
 };

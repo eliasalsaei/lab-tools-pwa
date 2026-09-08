@@ -5,13 +5,17 @@ export default {
   subtitle: 'Convert a required chemical mass feed to a pump feed rate',
   procedureRef: 'water-feed-pump-calibration',
   inputs: [
-    { id: 'lbsPerDay', label: 'Chemical Required', unit: 'lbs/day' },
+    { id: 'kgPerDay', label: 'Chemical Required', unit: 'kg/day' },
     { id: 'specificGravity', label: 'Product Specific Gravity', default: 1.0 },
     { id: 'purityPercent', label: 'Product Purity', unit: '%', default: 100 },
   ],
-  compute({ lbsPerDay, specificGravity, purityPercent }) {
+  compute({ kgPerDay, specificGravity, purityPercent }) {
     if (!(specificGravity > 0) || !(purityPercent > 0)) throw new Error('Specific gravity and purity must be greater than 0');
-    const feedRateGpd = lbsPerDay / (8.34 * specificGravity * (purityPercent / 100));
-    return { 'Feed Rate': { value: feedRateGpd, unit: 'gal/day' } };
+    // Specific gravity is relative to water (1 kg/L), so density in kg/L = SG
+    const feedRateLpd = kgPerDay / (specificGravity * (purityPercent / 100));
+    return {
+      'Feed Rate': { value: feedRateLpd, unit: 'L/day' },
+      'Feed Rate (per hour)': { value: feedRateLpd / 24, unit: 'L/h', decimals: 3 },
+    };
   },
 };

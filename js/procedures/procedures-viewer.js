@@ -21,7 +21,7 @@ function searchProcedures(list, query) {
   const q = query.trim().toLowerCase();
   if (!q) return list;
   return list.filter((p) => {
-    const hay = [p.title, p.methodRef, ...(p.aliases || []), ...(p.steps || [])].join(' ').toLowerCase();
+    const hay = [p.title, p.methodRef, p.hachMethod, p.instrument, ...(p.aliases || []), ...(p.steps || [])].join(' ').toLowerCase();
     return hay.includes(q);
   });
 }
@@ -76,11 +76,33 @@ export async function renderProcedureDetail({ id }) {
   }
 
   const meta = domainMeta(proc.domain);
+  const facts = [
+    proc.instrument ? ['Instrument', proc.instrument] : null,
+    proc.hachMethod ? ['Hach Method', proc.hachMethod] : null,
+    proc.range ? ['Range', proc.range] : null,
+    proc.sampleVolume ? ['Sample Volume', proc.sampleVolume] : null,
+    proc.reactionTime ? ['Reaction Time', proc.reactionTime] : null,
+    proc.wavelength ? ['Wavelength', proc.wavelength] : null,
+    proc.holdingTime ? ['Holding Time', proc.holdingTime] : null,
+    proc.frequency ? ['Frequency', proc.frequency] : null,
+  ].filter(Boolean);
+
   view.innerHTML = `
     <a class="back-link" href="#/procedures">&larr; All Procedures</a>
     <div class="section-title">${meta.icon} ${escapeHtml(meta.label)}</div>
     <h2>${escapeHtml(proc.title)}</h2>
     <p>${escapeHtml(proc.methodRef || '')}</p>
+
+    ${facts.length ? `
+      <div class="fact-table">
+        ${facts.map(([k, v]) => `<div class="fact-row"><span class="fact-key">${escapeHtml(k)}</span><span class="fact-val">${escapeHtml(v)}</span></div>`).join('')}
+      </div>
+    ` : ''}
+
+    ${proc.interferences && proc.interferences.length ? `
+      <div class="section-title">Interferences</div>
+      <ul class="procedure-step-list">${proc.interferences.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul>
+    ` : ''}
 
     ${proc.equipment && proc.equipment.length ? `
       <div class="section-title">Equipment</div>
@@ -95,9 +117,19 @@ export async function renderProcedureDetail({ id }) {
     <div class="section-title">Procedure</div>
     <ol class="procedure-step-list">${(proc.steps || []).map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ol>
 
+    ${proc.qualityControl && proc.qualityControl.length ? `
+      <div class="section-title">Quality Control</div>
+      <ul class="procedure-step-list">${proc.qualityControl.map((q) => `<li>${escapeHtml(q)}</li>`).join('')}</ul>
+    ` : ''}
+
+    ${proc.troubleshooting && proc.troubleshooting.length ? `
+      <div class="section-title">Troubleshooting</div>
+      <ul class="procedure-step-list">${proc.troubleshooting.map((t) => `<li>${escapeHtml(t)}</li>`).join('')}</ul>
+    ` : ''}
+
     ${proc.safetyNotes && proc.safetyNotes.length ? `
       <div class="section-title">Safety Notes</div>
-      <ul class="procedure-step-list">${proc.safetyNotes.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+      <ul class="procedure-step-list warn-list">${proc.safetyNotes.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
     ` : ''}
 
     ${proc.calcRef ? `<a class="btn btn-primary btn-block" href="#/calculators/calc/${proc.calcRef}">Open Calculator</a>` : ''}

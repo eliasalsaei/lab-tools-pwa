@@ -14,6 +14,8 @@ import boiler_phosphate_dose from './configs/boiler-phosphate-dose.js';
 import boiler_sulfite_dose from './configs/boiler-sulfite-dose.js';
 import boiler_condensate_return from './configs/boiler-condensate-return.js';
 import boiler_tds_conductivity from './configs/boiler-tds-conductivity.js';
+import boiler_ph_from_conductivity from './configs/boiler-ph-from-conductivity.js';
+import boiler_conductivity_from_ph from './configs/boiler-conductivity-from-ph.js';
 
 import wastewater_bod5 from './configs/wastewater-bod5.js';
 import wastewater_cod from './configs/wastewater-cod.js';
@@ -46,6 +48,8 @@ export const CALCULATORS = [
   boiler_sulfite_dose,
   boiler_condensate_return,
   boiler_tds_conductivity,
+  boiler_ph_from_conductivity,
+  boiler_conductivity_from_ph,
 
   wastewater_bod5,
   wastewater_cod,

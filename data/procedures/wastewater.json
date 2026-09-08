@@ -1,111 +1,656 @@
 [
   {
-    "id": "wastewater-bod5-sm5210b",
+    "id": "wastewater-cod-hach-8000",
     "domain": "wastewater",
-    "title": "BOD5 Test — 5-Day Biochemical Oxygen Demand",
-    "methodRef": "Standard Methods 5210B",
-    "aliases": ["BOD", "BOD5", "biochemical oxygen demand"],
-    "equipment": ["BOD bottles (300 mL)", "DO meter/probe", "Incubator (20°C, dark)"],
-    "reagents": ["Dilution water (with nutrient buffer, seed as needed)"],
-    "steps": [
-      "Prepare dilution water and, if needed, seed with an appropriate microbial source.",
-      "Prepare sample dilutions expected to give a DO depletion of at least 2 mg/L with at least 1 mg/L DO remaining after 5 days.",
-      "Measure and record initial DO (D1) for sample bottles and seed blank bottles (B1).",
-      "Incubate all bottles at 20°C in the dark for 5 days, sealed with no air bubbles.",
-      "After 5 days, measure and record final DO (D2 and B2).",
-      "Calculate BOD5 using the BOD5 calculator with D1, D2, B1, B2, seed correction factor, and dilution fraction."
+    "title": "COD — Hach Reactor Digestion (DR6000)",
+    "methodRef": "Hach Method 8000 — Reactor Digestion; USEPA approved for wastewater reporting",
+    "instrument": "Hach DR6000 Spectrophotometer with DRB200 reactor",
+    "hachMethod": "Method 8000 — Reactor Digestion, using pre-dosed TNTplus or standard COD vials",
+    "range": "Ultra-low 0.7–40 mg/L; low range 3–150 mg/L; high range 20–1500 mg/L; high range plus 250–15000 mg/L",
+    "sampleVolume": "2.00 mL into the vial (0.20 mL for high range plus)",
+    "reactionTime": "120 minutes digestion at 150 °C, then cool",
+    "wavelength": "420 nm (low range) / 620 nm (high range) — set automatically by the stored program",
+    "aliases": ["COD", "chemical oxygen demand", "reactor digestion", "hach 8000", "DR6000 COD", "TNTplus"],
+    "frequency": "Daily on influent and effluent; per the discharge consent monitoring schedule",
+    "holdingTime": "28 days if preserved with sulfuric acid to pH < 2 and stored at 4 °C; otherwise analyse within 24 h",
+    "equipment": [
+      "Hach DR6000 spectrophotometer",
+      "Hach DRB200 COD reactor preheated to 150 °C",
+      "COD vial adapter for the DR6000",
+      "Adjustable pipette, 2.00 mL, with clean tips",
+      "Vial rack and heat-resistant gloves",
+      "Test tube cooling rack"
     ],
-    "safetyNotes": ["Handle samples that may contain pathogens with standard lab PPE."],
-    "calcRef": "wastewater-bod5"
+    "reagents": [
+      "Hach COD digestion reagent vials of the appropriate range",
+      "Deionised water for the reagent blank",
+      "COD standard solution for QC verification"
+    ],
+    "interferences": [
+      "CHLORIDE is the major interference and is positively biasing — the mercuric sulfate in the vials complexes it, but samples above roughly 2000 mg/L chloride still need dilution or a chloride-tolerant vial.",
+      "A non-homogeneous sample gives poor duplicates — COD samples containing solids must be blended before pipetting.",
+      "Pipetting error is the largest source of variability, since only 2.00 mL is used. An inaccurate pipette directly scales the error.",
+      "Vials must be inverted to mix after adding sample or the digestion is incomplete."
+    ],
+    "steps": [
+      "PREHEAT the DRB200 reactor to 150 °C and confirm it has reached temperature before starting. Digestion at a lower temperature gives low results.",
+      "Select the vial range appropriate to the expected COD. If the range is unknown, run the sample on high range first, then repeat on a narrower range if the result is low.",
+      "HOMOGENISE the sample thoroughly. For influent or any sample containing solids, blend it — an unblended sample makes the 2 mL aliquot unrepresentative and duplicates will not agree.",
+      "Verify the pipette's accuracy is within its calibration schedule. At 2.00 mL, a 2 % pipette error is a 2 % COD error.",
+      "PREPARE THE BLANK: pipette exactly 2.00 mL of deionised water into a COD vial of the same lot.",
+      "PREPARE THE SAMPLE: pipette exactly 2.00 mL of homogenised sample into a second vial, holding the vial at an angle to let the sample run down the wall.",
+      "Cap both vials tightly. Wipe the outside clean — spilled digestion reagent will damage the reactor and stain the vial optics.",
+      "INVERT each vial several times to mix. The vials become very hot during this step because of the acid dilution heat — hold them by the cap.",
+      "Place the vials in the preheated reactor and digest for exactly 120 minutes.",
+      "At the end of digestion, remove the vials and place them in a rack to cool to about 120 °C, then invert each one several times while still warm.",
+      "Cool the vials to room temperature in the rack. Do NOT quench them in water — thermal shock breaks vials and the result is affected by temperature.",
+      "Select the stored program for COD by the appropriate range on the DR6000, and fit the vial adapter.",
+      "Wipe each vial with a lint-free cloth. Fingerprints and residue on a round vial are a major source of error.",
+      "Insert the BLANK vial and press ZERO.",
+      "Insert the SAMPLE vial in the same orientation and press READ. Record the result in mg/L COD.",
+      "If the result exceeds the vial range, dilute the original sample with deionised water by a known factor, run a fresh digestion, and multiply by the dilution factor. Do NOT dilute an already-digested vial.",
+      "For discharge compliance, compare against the consent limit and flag any exceedance immediately per the site's escalation procedure.",
+      "Log the result, the vial range and lot, the dilution factor if any, and the sample point in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a reagent blank with EVERY batch, using a vial from the same lot. The blank corrects for lot-to-lot reagent variation.",
+      "Run a known COD standard with each batch; recovery should be within the limits set by your QA programme.",
+      "Run a duplicate on every 10th sample. Poor duplicate agreement on wastewater usually means inadequate homogenisation, not instrument error.",
+      "Verify the reactor temperature with an independent thermometer periodically — a reactor running cool gives systematically low COD.",
+      "Verify pipette calibration on schedule and record it."
+    ],
+    "troubleshooting": [
+      "Duplicates disagree badly: the sample was not homogenised, or the pipette is drawing inconsistently. Blend the sample and repeat.",
+      "All results biased low: reactor not reaching 150 °C, digestion time cut short, or reagent past expiry.",
+      "Green vial after digestion on a high-range vial: COD is above range — dilute and repeat.",
+      "Erratic readings between vials: vials not wiped clean, or inserted in different orientations. Wipe every vial and insert consistently.",
+      "Blank reads high: reagent lot issue or contaminated deionised water — check the water source."
+    ],
+    "safetyNotes": [
+      "COD vials contain CONCENTRATED SULFURIC ACID, HEXAVALENT CHROMIUM, MERCURY, and SILVER. They are corrosive, toxic, and an environmental hazard.",
+      "Wear goggles, gloves, and a lab coat. Handle vials over a tray.",
+      "Vials get extremely hot on mixing and during digestion — always use the rack and heat-resistant gloves, never bare hands.",
+      "NEVER pour spent COD vials down the drain. Collect them as hazardous waste (chromium and mercury) per your site's chemical waste procedure.",
+      "If a vial breaks in the reactor, allow it to cool completely before cleaning, and treat all debris as hazardous waste.",
+      "The definitive reference is the Hach method sheet supplied with your vial lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
   },
   {
     "id": "wastewater-cod-sm5220",
     "domain": "wastewater",
-    "title": "COD Test — Closed Reflux Titrimetric Method",
-    "methodRef": "Standard Methods 5220",
-    "aliases": ["COD", "chemical oxygen demand"],
-    "equipment": ["COD digestion vials/reactor (150°C)", "Burette or digital titrator"],
-    "reagents": ["Potassium dichromate digestion solution", "Sulfuric acid reagent", "Ferroin indicator", "Standardized FAS (ferrous ammonium sulfate) titrant"],
-    "steps": [
-      "Add sample (and a blank using distilled water) to COD digestion vials per kit instructions.",
-      "Digest at 150°C for 2 hours in the COD reactor.",
-      "Allow vials to cool to room temperature.",
-      "Add ferroin indicator to each vial.",
-      "Titrate sample and blank with standardized FAS titrant to the color change endpoint (blue-green to reddish-brown).",
-      "Calculate COD using the COD calculator with blank and sample titrant volumes, FAS normality, and sample volume."
+    "title": "COD — Titrimetric (Closed Reflux, FAS Titration)",
+    "methodRef": "Standard Methods 5220C — Closed Reflux, Titrimetric Method",
+    "aliases": ["COD titration", "FAS titration", "closed reflux", "ferroin"],
+    "frequency": "Backup method when the spectrophotometer is unavailable, or for verification of the colorimetric result",
+    "holdingTime": "28 days if preserved with sulfuric acid to pH < 2 at 4 °C",
+    "equipment": [
+      "COD digestion vessels and block digester (150 °C)",
+      "Burette or Hach digital titrator",
+      "Magnetic stirrer",
+      "Pipettes"
     ],
-    "safetyNotes": ["Digestion solution contains strong acid and chromium — wear gloves/eye protection and use the reactor's safety shield."],
+    "reagents": [
+      "Potassium dichromate digestion solution (with mercuric sulfate)",
+      "Sulfuric acid reagent containing silver sulfate",
+      "Ferroin indicator solution",
+      "Standardised ferrous ammonium sulfate (FAS) titrant",
+      "Potassium hydrogen phthalate (KHP) standard for QC"
+    ],
+    "interferences": [
+      "Chloride interferes positively; mercuric sulfate in the digestion solution suppresses it up to the method's limit.",
+      "FAS titrant oxidises in air and must be re-standardised frequently — an out-of-date titrant normality is a direct multiplier on the error.",
+      "Incomplete homogenisation gives unrepresentative aliquots."
+    ],
+    "steps": [
+      "Standardise the FAS titrant against the dichromate solution on the day of use, and record the normality obtained. This value goes directly into the calculation.",
+      "Homogenise/blend the sample thoroughly.",
+      "Pipette the specified sample volume into a digestion vessel, then add digestion solution and acid reagent in the order given by the method.",
+      "Prepare a blank identically, using deionised water in place of sample.",
+      "Cap tightly, invert to mix (the vessels become hot), and digest at 150 °C for 2 hours.",
+      "Cool the vessels to room temperature in a rack — do not quench.",
+      "Transfer the digestate to a flask (or titrate in the vessel per your method), add 1-2 drops of ferroin indicator, and place on a magnetic stirrer.",
+      "Titrate with standardised FAS. The colour passes from blue-green through to a sharp reddish-brown at the endpoint.",
+      "Record the FAS volume for the BLANK (A) and for the SAMPLE (B).",
+      "Enter the blank volume, sample volume, FAS normality, and sample aliquot volume into the COD calculator.",
+      "Log the result, the FAS normality used and its standardisation date, and the sample point in the Logbook."
+    ],
+    "qualityControl": [
+      "Standardise FAS on each day of use — this is not optional; the titrant degrades.",
+      "Run a KHP standard of known COD with each batch; theoretical COD of KHP is 1.176 mg O2 per mg KHP.",
+      "Run a blank with every batch.",
+      "Run duplicates on every 10th sample."
+    ],
+    "troubleshooting": [
+      "Endpoint is indistinct: ferroin indicator may be old, or the digestate is too dilute — check indicator and aliquot size.",
+      "Blank titration volume drifting between batches: FAS is oxidising; re-standardise.",
+      "Result disagrees with the DR6000 colorimetric result: check FAS standardisation first, then digestion temperature."
+    ],
+    "safetyNotes": [
+      "Digestion solutions contain concentrated sulfuric acid, hexavalent chromium, mercury, and silver — corrosive, toxic, and environmentally hazardous.",
+      "Collect all spent digestate as hazardous waste; never pour to drain.",
+      "Vessels become extremely hot during acid addition and digestion."
+    ],
     "calcRef": "wastewater-cod"
+  },
+  {
+    "id": "wastewater-bod5-sm5210b",
+    "domain": "wastewater",
+    "title": "BOD5 — 5-Day Biochemical Oxygen Demand",
+    "methodRef": "Standard Methods 5210B",
+    "aliases": ["BOD", "BOD5", "biochemical oxygen demand", "5 day BOD"],
+    "frequency": "Per the discharge consent schedule; typically several times per week on influent and effluent",
+    "holdingTime": "Begin the test within 24 h of collection (6 h preferred); store at 4 °C",
+    "equipment": [
+      "300 mL BOD bottles with ground glass stoppers and water seals",
+      "DO meter with self-stirring BOD probe (or Winkler titration apparatus)",
+      "Incubator at 20 ± 1 °C, dark",
+      "20 L carboy for dilution water with aeration equipment",
+      "Volumetric pipettes and cylinders"
+    ],
+    "reagents": [
+      "Phosphate buffer solution",
+      "Magnesium sulfate solution",
+      "Calcium chloride solution",
+      "Ferric chloride solution",
+      "Seed material (settled domestic sewage or commercial seed capsules)",
+      "Glucose-glutamic acid (GGA) standard for QC",
+      "Sodium sulfite and potassium iodide for dechlorination if required"
+    ],
+    "interferences": [
+      "Residual chlorine in the sample kills the microorganisms — dechlorinate before setting up.",
+      "Toxic substances (metals, high ammonia, industrial discharges) suppress the result; a suppressed BOD may look like a good result but is actually invalid.",
+      "Nitrification consumes oxygen and inflates the result unless a nitrification inhibitor is used (report as cBOD5 when inhibited).",
+      "Supersaturated or very cold samples must be brought to about 20 °C before setup, or the initial DO reading is wrong.",
+      "Dilution water that is not properly prepared or aerated invalidates the entire batch."
+    ],
+    "steps": [
+      "PREPARE DILUTION WATER at least a day ahead: add the nutrient buffer solutions to deionised water, aerate to saturation, and hold at 20 °C. Its blank depletion is a direct check on its quality.",
+      "Bring samples to about 20 °C and check for residual chlorine; dechlorinate with sodium sulfite if present.",
+      "SELECT DILUTIONS to give a final DO depletion of at least 2.0 mg/L with at least 1.0 mg/L DO remaining after 5 days. Since the correct dilution is rarely known in advance, set up at least three different dilutions per sample so at least one lands in the valid window.",
+      "As a starting guide, dilute in proportion to expected strength — strong influent needs a much smaller sample fraction than final effluent.",
+      "Add seed to each bottle if the sample is not expected to contain sufficient organisms (effluent, industrial, or chlorinated samples).",
+      "Set up SEED BLANKS: bottles containing dilution water plus the same seed volume, with no sample.",
+      "Set up DILUTION WATER BLANKS: bottles with dilution water only. These must deplete less than 0.2 mg/L over 5 days or the batch is invalid.",
+      "Set up the GGA STANDARD as a check on the whole procedure.",
+      "Fill each bottle completely, insert the stopper without trapping any air bubble, and check no bubble is present — a bubble invalidates that bottle.",
+      "Measure and record the INITIAL DO (D1 for samples, B1 for seed blanks) on each bottle, or on a representative bottle per the method being followed.",
+      "Add the water seal to each bottle, cover, and place in the incubator at 20 °C in the DARK. Light promotes algal oxygen production and ruins results.",
+      "After exactly 5 days (±2 hours), measure and record the FINAL DO (D2 and B2).",
+      "VALIDATE EACH BOTTLE before using it: depletion must be at least 2.0 mg/L AND at least 1.0 mg/L DO must remain. Discard bottles that fail either criterion and use one that passes.",
+      "Enter D1, D2, B1, B2, the seed correction factor, and the decimal dilution fraction into the BOD5 calculator.",
+      "Where several dilutions are valid, average their results per the method's rules.",
+      "Use the influent BOD together with plant flow, aeration volume, and MLVSS in the F/M Ratio calculator for process control.",
+      "Log the result, all dilutions used, which bottles were valid, and the blank/GGA performance in the Logbook."
+    ],
+    "qualityControl": [
+      "Dilution water blank must deplete less than 0.2 mg/L over 5 days — if it exceeds this, the whole batch is suspect.",
+      "GGA standard should recover 198 ± 30.5 mg/L (the Standard Methods acceptance window); a failing GGA indicates a problem with seed, dilution water, or technique.",
+      "Run duplicates and track precision over time.",
+      "Verify incubator temperature daily and record it.",
+      "Verify DO meter calibration before each reading session."
+    ],
+    "troubleshooting": [
+      "All bottles depleted to zero: sample was under-diluted. Set up more dilutions covering weaker fractions.",
+      "No measurable depletion: sample over-diluted, or the sample is toxic/inhibited, or chlorine was not fully removed.",
+      "GGA fails low: seed inactive or dilution water nutrient-deficient.",
+      "Result is much lower than COD would suggest: suspect toxicity or inhibition in the sample.",
+      "Erratic results across duplicates: air bubbles in bottles, or inconsistent DO probe technique."
+    ],
+    "safetyNotes": [
+      "Wastewater samples are a biohazard — wear gloves, avoid aerosols, and wash hands thoroughly afterwards.",
+      "Do not mouth-pipette anything.",
+      "Handle glass BOD bottles carefully; stoppers can jam and bottles crack under pressure."
+    ],
+    "calcRef": "wastewater-bod5"
+  },
+  {
+    "id": "wastewater-ammonia-hach-8155",
+    "domain": "wastewater",
+    "title": "Ammonia Nitrogen — Hach Salicylate (DR6000)",
+    "methodRef": "Hach Method 8155 — Salicylate method",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8155 — Salicylate, powder pillows or TNTplus vials",
+    "range": "0.01 – 0.50 mg/L NH3-N (low range); higher ranges available via TNTplus vials",
+    "reactionTime": "20 minutes",
+    "wavelength": "655 nm (set automatically by the stored program)",
+    "aliases": ["ammonia", "NH3", "NH3-N", "ammoniacal nitrogen", "salicylate", "hach 8155", "DR6000 ammonia"],
+    "frequency": "Daily on effluent for consent monitoring; more often during nitrification upsets",
+    "holdingTime": "28 days if preserved with sulfuric acid to pH < 2 at 4 °C; otherwise analyse within 24 h",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched sample cells or TNTplus vial adapter", "Pipettes", "Lint-free wipes"],
+    "reagents": ["Ammonia salicylate reagent", "Ammonia cyanurate reagent", "Deionised, ammonia-free water for blank and dilution"],
+    "interferences": [
+      "Ammonia contamination is everywhere in a lab — cleaning products, smoking, and even breath affect low-level results. Keep ammonia work away from cleaning chemicals.",
+      "Turbidity and colour interfere; filter turbid samples.",
+      "High concentrations of calcium, magnesium, or iron can cause precipitation — the method includes conditioning steps to manage this.",
+      "The green colour continues developing; read within the window the method specifies."
+    ],
+    "steps": [
+      "Collect the sample and, if it will not be analysed immediately, preserve with sulfuric acid to pH < 2 and refrigerate.",
+      "Filter the sample if it is visibly turbid.",
+      "Select the stored program for ammonia nitrogen by the salicylate method (Hach Method 8155) on the DR6000, matching the reagent format in use (powder pillow or TNTplus).",
+      "DILUTE if the sample is expected above range — untreated influent typically needs substantial dilution. Use ammonia-free deionised water and record the factor.",
+      "PREPARE THE BLANK using ammonia-free deionised water in place of sample, treated with the same reagents.",
+      "PREPARE THE SAMPLE: add the salicylate reagent, then the cyanurate reagent, in the order and quantities specified, swirling to dissolve after each.",
+      "Start the 20-minute instrument timer. A green colour develops in proportion to ammonia present.",
+      "When the timer expires, wipe both cells, zero on the blank, then read the sample.",
+      "Multiply by the dilution factor if the sample was diluted, and record both the raw and corrected values.",
+      "Interpret for process control: ammonia in final effluent indicates incomplete nitrification. Check dissolved oxygen in the aeration basin, sludge age (SRT), temperature, and pH — nitrifiers are slow-growing and are the first organisms lost when SRT drops or DO is inadequate.",
+      "Log the result, the sample point, and the associated DO/SRT data in the Logbook so the process picture stays connected."
+    ],
+    "qualityControl": [
+      "Run a reagent blank with every batch using ammonia-free water.",
+      "Verify against an ammonia standard on the QA schedule.",
+      "Run duplicates on every 10th sample.",
+      "Run a spiked sample periodically to check for matrix interference in your effluent."
+    ],
+    "troubleshooting": [
+      "Blank reads high: ammonia contamination in the deionised water, glassware, or laboratory air. Isolate ammonia work from cleaning chemicals.",
+      "Result over range: dilute with ammonia-free water and repeat.",
+      "Colour weak on a known-positive sample: reagents added out of order or expired.",
+      "Poor duplicates: turbidity — filter the sample before analysis."
+    ],
+    "safetyNotes": [
+      "Salicylate and cyanurate reagents are irritants; cyanurate reagent is harmful if ingested.",
+      "Wastewater samples are a biohazard — gloves and hand washing required.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
+  },
+  {
+    "id": "wastewater-nitrate-hach-8039",
+    "domain": "wastewater",
+    "title": "Nitrate — Hach Cadmium Reduction (DR6000)",
+    "methodRef": "Hach Method 8039 — Cadmium Reduction (NitraVer 5)",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8039 — NitraVer 5 cadmium reduction, high range",
+    "range": "0.3 – 30.0 mg/L NO3-N (high range)",
+    "sampleVolume": "10 mL sample cell",
+    "reactionTime": "1 minute vigorous mixing, then 5 minute reaction",
+    "aliases": ["nitrate", "NO3", "NO3-N", "NitraVer", "cadmium reduction", "hach 8039", "DR6000 nitrate"],
+    "frequency": "Daily on effluent where total nitrogen is consented; during denitrification troubleshooting",
+    "holdingTime": "48 h at 4 °C unpreserved; 28 days if acid preserved to pH < 2",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched 10 mL sample cells", "Timer (instrument built-in)", "Lint-free wipes"],
+    "reagents": ["NitraVer 5 Nitrate Reagent powder pillows", "Deionised water for blank and dilution"],
+    "interferences": [
+      "The mixing step is unusually critical for this method — the cadmium must be agitated vigorously for the full period or results are low and irreproducible.",
+      "Strong oxidising and reducing substances interfere.",
+      "High chloride biases results low; high iron interferes.",
+      "Undissolved reagent is normal and does not affect the reading, but incomplete mixing does."
+    ],
+    "steps": [
+      "Collect the sample and filter if visibly turbid.",
+      "Select the stored program for nitrate by cadmium reduction (Hach Method 8039) on the DR6000.",
+      "PREPARE THE BLANK: fill a clean cell to the 10 mL mark with untreated sample.",
+      "PREPARE THE SAMPLE: fill the second matched cell to the 10 mL mark and add one NitraVer 5 powder pillow.",
+      "Cap and SHAKE VIGOROUSLY for the full 1 minute specified. This is the step most often shortened, and shortening it gives low results. Use the instrument timer, not judgement.",
+      "Start the 5-minute reaction timer and let the sample stand undisturbed. An amber colour develops if nitrate is present.",
+      "When the timer expires, wipe both cells, zero on the blank, then read the sample within the method's reading window — the colour is not stable indefinitely.",
+      "Multiply by any dilution factor applied and record both values.",
+      "Interpret for process control: nitrate in effluent means nitrification is working but denitrification is not removing it. Check anoxic zone conditions, internal recycle rate, and whether sufficient carbon is available for denitrifiers.",
+      "Consider nitrate together with ammonia: high ammonia and low nitrate means nitrification is failing; low ammonia and high nitrate means nitrification works but denitrification is limited.",
+      "Log the result alongside the ammonia result and process conditions in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a blank with each batch.",
+      "Verify against a nitrate standard on the QA schedule — this method's accuracy is technique-sensitive, so standard checks matter more than usual.",
+      "Run duplicates on every 10th sample; poor agreement usually means inconsistent shaking.",
+      "Record reagent lot and expiry."
+    ],
+    "troubleshooting": [
+      "Results low and variable: insufficient or inconsistent shaking during the reduction step. Time it and shake vigorously.",
+      "Result over range: dilute and repeat.",
+      "Colour fading before reading: read promptly once the reaction timer expires."
+    ],
+    "safetyNotes": [
+      "NitraVer 5 CONTAINS CADMIUM, which is toxic and an environmental hazard.",
+      "Collect all spent samples and reagent as hazardous waste — never pour cadmium-containing waste down the drain.",
+      "Avoid all skin contact and do not inhale the powder.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
+  },
+  {
+    "id": "wastewater-phosphorus-hach-8190",
+    "domain": "wastewater",
+    "title": "Phosphorus, Total — Hach Acid Persulfate Digestion (DR6000)",
+    "methodRef": "Hach Method 8190 — Acid Persulfate Digestion followed by PhosVer 3 (Method 8048)",
+    "instrument": "Hach DR6000 Spectrophotometer with DRB200 reactor",
+    "hachMethod": "Method 8190 — Total phosphorus, acid persulfate digestion",
+    "range": "0.06 – 3.50 mg/L PO4 (as measured after digestion); dilute higher samples",
+    "reactionTime": "30 minutes digestion at 150 °C, then 2 minutes colour development",
+    "wavelength": "880 nm (set automatically by the stored program)",
+    "aliases": ["total phosphorus", "TP", "phosphorus", "persulfate digestion", "hach 8190", "DR6000 phosphorus"],
+    "frequency": "Per the discharge consent schedule; commonly weekly to daily on final effluent",
+    "holdingTime": "28 days if preserved with sulfuric acid to pH < 2 at 4 °C",
+    "equipment": [
+      "Hach DR6000 spectrophotometer",
+      "Hach DRB200 reactor at 150 °C",
+      "Test tube rack and heat-resistant gloves",
+      "Pipettes",
+      "Lint-free wipes"
+    ],
+    "reagents": [
+      "Potassium persulfate powder pillows for phosphonate",
+      "Sodium hydroxide solution 1.54 N",
+      "PhosVer 3 phosphate powder pillows",
+      "Deionised water for blank and dilution"
+    ],
+    "interferences": [
+      "Phosphate-containing detergents contaminate glassware — never use them for phosphorus work.",
+      "Incomplete digestion under-reports total phosphorus, since organic and condensed phosphates are not converted to orthophosphate.",
+      "Turbidity and colour interfere with the final reading.",
+      "Neutralisation after digestion must be correct, or colour development is affected."
+    ],
+    "steps": [
+      "Preheat the DRB200 reactor to 150 °C.",
+      "Collect and homogenise the sample. Total phosphorus includes particulate forms, so the aliquot must be representative.",
+      "Pipette the specified sample volume into a digestion vial, and prepare a blank identically with deionised water.",
+      "Add the potassium persulfate reagent to each vial and cap tightly. Invert to dissolve.",
+      "Digest at 150 °C for 30 minutes. This step converts organic and condensed phosphates to orthophosphate — skipping or shortening it means you are measuring only reactive phosphorus, not total.",
+      "Cool the vials to room temperature in a rack. Do not quench.",
+      "Add sodium hydroxide solution to neutralise, per the method's specified volume.",
+      "Select the stored program for total phosphorus (Hach Method 8190) on the DR6000.",
+      "Add the PhosVer 3 reagent to each vial and start the 2-minute colour development timer.",
+      "Wipe both vials, zero on the blank, and read the sample. Record the result.",
+      "Apply any dilution factor and record both the raw and corrected results.",
+      "Compare to the discharge consent limit. If phosphorus removal is chemical, review the coagulant dose; if biological, review the anaerobic zone conditions.",
+      "Log the result, digestion batch, and any dosing change in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a digested blank with every batch — the blank must go through the full digestion, not just the colour step.",
+      "Verify against a phosphorus standard taken through the complete digestion procedure; this checks digestion efficiency, not just colour development.",
+      "Run duplicates on every 10th sample.",
+      "Verify reactor temperature periodically."
+    ],
+    "troubleshooting": [
+      "Total phosphorus result equal to reactive phosphorus: digestion is not working — check reactor temperature and persulfate reagent age.",
+      "High blank: phosphate contamination from glassware or detergent.",
+      "Poor duplicates: sample not homogenised, so particulate phosphorus is unevenly sampled."
+    ],
+    "safetyNotes": [
+      "Persulfate is a strong oxidiser; sodium hydroxide is caustic. Both require gloves and eye protection.",
+      "Vials are extremely hot after digestion — use the rack and heat-resistant gloves.",
+      "Wastewater samples are a biohazard.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
+  },
+  {
+    "id": "wastewater-tss-hach-8006",
+    "domain": "wastewater",
+    "title": "Suspended Solids — Hach Photometric (DR6000)",
+    "methodRef": "Hach Method 8006 — Photometric suspended solids (screening method)",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8006 — Suspended solids, photometric",
+    "range": "5 – 750 mg/L TSS",
+    "sampleVolume": "10 mL sample cell",
+    "wavelength": "810 nm (set automatically by the stored program)",
+    "aliases": ["TSS", "suspended solids", "hach 8006", "DR6000 solids", "photometric solids"],
+    "frequency": "As a rapid process check through the shift; the gravimetric method is required for compliance reporting",
+    "holdingTime": "Analyse immediately — solids settle and the sample changes rapidly",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched 10 mL sample cells", "Blender (for homogenisation)", "Lint-free wipes"],
+    "reagents": ["Deionised water for blank"],
+    "interferences": [
+      "This is a light-scattering measurement, so particle size and colour strongly affect it. Results are NOT directly comparable to gravimetric TSS unless correlated for your specific sample matrix.",
+      "Settling during the measurement gives a falling reading — read immediately after mixing.",
+      "Air bubbles read as solids.",
+      "Coloured samples bias the result."
+    ],
+    "steps": [
+      "Understand the method's role first: this is a fast screening tool for process control. For discharge compliance reporting, use the gravimetric MLSS/TSS procedure instead.",
+      "Blend the sample at high speed for the period specified by the method to break up flocs to a consistent particle size — this step is what makes results reproducible.",
+      "Let the blended sample stand briefly to release air bubbles introduced by blending.",
+      "Select the stored program for suspended solids (Hach Method 8006) on the DR6000.",
+      "PREPARE THE BLANK: fill a clean cell to the 10 mL mark with deionised water. Wipe, insert, and press ZERO.",
+      "Swirl the blended sample to re-suspend, then immediately fill the second matched cell to the 10 mL mark.",
+      "Wipe the cell and insert it promptly — every second of delay lets solids settle and lowers the reading.",
+      "Press READ and record the result in mg/L TSS.",
+      "CORRELATE before relying on the numbers: run parallel photometric and gravimetric determinations on your own samples to establish the relationship for your plant, and note that correlation in the Logbook.",
+      "Use for rapid checks — mixed liquor trends through a shift, clarifier carryover, or confirming a process change — and confirm anything significant gravimetrically.",
+      "Log the result, noting clearly that it is the photometric screening method rather than gravimetric."
+    ],
+    "qualityControl": [
+      "Establish and periodically re-verify a correlation against the gravimetric method for your plant's sample matrix.",
+      "Run duplicates; poor agreement means inconsistent blending or settling delay.",
+      "Use deionised water blanks to confirm the instrument zero.",
+      "Never report a photometric result as a gravimetric one for compliance purposes."
+    ],
+    "troubleshooting": [
+      "Reading falls while the cell sits in the instrument: solids settling — mix and read faster.",
+      "Photometric and gravimetric results diverge over time: the floc character has changed; re-establish the correlation.",
+      "Erratic results: inconsistent blending time or air bubbles."
+    ],
+    "safetyNotes": [
+      "Wastewater samples are a biohazard — wear gloves, avoid aerosols (especially when blending), and wash hands afterwards.",
+      "Blend with the lid secured to avoid spraying sample.",
+      "The definitive reference is the Hach method sheet; this SOP is a bench summary."
+    ],
+    "calcRef": null
   },
   {
     "id": "wastewater-mlss-mlvss-sm2540",
     "domain": "wastewater",
     "title": "MLSS / MLVSS — Gravimetric Method",
-    "methodRef": "Standard Methods 2540 D/E",
-    "aliases": ["MLSS", "MLVSS", "mixed liquor suspended solids"],
-    "equipment": ["Glass fiber filter", "Filtration apparatus", "Drying oven (103-105°C)", "Muffle furnace (550°C, for VSS)", "Analytical balance", "Desiccator"],
-    "reagents": [],
-    "steps": [
-      "Pre-dry and weigh a glass fiber filter (tare weight).",
-      "Filter a measured volume of well-mixed mixed liquor sample through the filter.",
-      "Dry the filter with residue at 103-105°C to constant weight; weigh (filter + dried residue).",
-      "For MLVSS: ignite the same filter at 550°C in a muffle furnace, cool in a desiccator, and reweigh (filter + residue after ignition).",
-      "Calculate MLSS and MLVSS using the MLSS / MLVSS calculator."
+    "methodRef": "Standard Methods 2540 D (TSS) and 2540 E (volatile solids)",
+    "aliases": ["MLSS", "MLVSS", "mixed liquor suspended solids", "volatile suspended solids", "gravimetric solids"],
+    "frequency": "Daily on mixed liquor and RAS; MLVSS weekly or per process control needs",
+    "holdingTime": "Analyse within 24 h; refrigerate at 4 °C if held",
+    "equipment": [
+      "Glass fibre filter discs (1.5 µm nominal, e.g. Whatman 934-AH)",
+      "Filtration apparatus with vacuum source",
+      "Drying oven at 103-105 °C",
+      "Muffle furnace at 550 ± 50 °C (for volatile solids)",
+      "Analytical balance readable to 0.1 mg",
+      "Desiccator with active desiccant",
+      "Forceps and aluminium weighing dishes",
+      "Graduated cylinder for accurate sample volume"
     ],
-    "safetyNotes": ["Use tongs and heat-resistant gloves when handling filters from the oven/furnace; cool in a desiccator before weighing."],
+    "reagents": ["Deionised water for rinsing"],
+    "interferences": [
+      "A non-representative sample is the main error — mixed liquor settles within seconds, so the aliquot must be taken while actively mixing.",
+      "Failure to reach constant mass leaves residual moisture and biases results high.",
+      "Handling filters with bare fingers adds mass; always use forceps.",
+      "Excessive sample volume clogs the filter and extends filtration time, allowing losses.",
+      "Static electricity on dry filters affects weighing on sensitive balances."
+    ],
+    "steps": [
+      "PREPARE FILTERS: place a glass fibre filter on the filtration apparatus, apply vacuum, and rinse with three successive volumes of deionised water to remove loose fibres.",
+      "Transfer the filter to a weighing dish and dry at 103-105 °C for at least 1 hour.",
+      "Cool in a desiccator to room temperature and weigh. Repeat the drying and weighing cycle until constant mass is reached (successive weights within 0.5 mg). Record this TARE mass.",
+      "For MLVSS work, ignite the tared filter at 550 °C for 15-20 minutes first, then re-cool and re-weigh, so the tare already accounts for ignition losses in the filter itself.",
+      "COLLECT THE SAMPLE while the mixed liquor is actively mixing. Take the aliquot immediately — do not let the sample stand.",
+      "Choose a sample volume that yields 2.5 to 200 mg of residue. For typical mixed liquor, 25-50 mL is usual; too much clogs the filter.",
+      "Swirl the sample immediately before pouring, and measure the volume accurately with a graduated cylinder.",
+      "Filter the measured sample under vacuum, then rinse the cylinder and filter with three small volumes of deionised water to transfer all solids and wash out dissolved salts.",
+      "Continue the vacuum for about 3 minutes after filtration completes to remove excess water.",
+      "Transfer the filter carefully to the weighing dish with forceps and dry at 103-105 °C for at least 1 hour.",
+      "Cool in a desiccator and weigh promptly. Repeat drying/cooling/weighing to constant mass. Record as FILTER + DRIED RESIDUE.",
+      "FOR MLVSS: ignite the same filter and residue at 550 °C for 15-20 minutes. Volatile (organic) matter burns off; inert matter remains.",
+      "Cool the ignited filter briefly in air, then in a desiccator to room temperature, and weigh promptly. Record as FILTER + RESIDUE AFTER IGNITION.",
+      "Enter the tare mass, dried mass, ignited mass (if measured), and sample volume into the MLSS / MLVSS calculator.",
+      "Use the MLSS result in the SVI calculator (with the settleability test) and the Sludge Age calculator, and the MLVSS result in the F/M Ratio calculator.",
+      "Log MLSS, MLVSS, the MLVSS/MLSS ratio, and the sample point in the Logbook. The ratio typically runs around 0.7-0.8 in conventional activated sludge; a falling ratio indicates accumulating inert material."
+    ],
+    "qualityControl": [
+      "Run duplicates on every 10th sample; agreement should be within about 5 %.",
+      "Verify oven and furnace temperatures with independent thermometers periodically.",
+      "Verify balance calibration with check weights before each weighing session.",
+      "Confirm constant mass is genuinely reached rather than assumed — this is the most common shortcut and it biases results.",
+      "Keep desiccant active; exhausted desiccant lets samples regain moisture during cooling."
+    ],
+    "troubleshooting": [
+      "Results scattered between duplicates: sample not taken while mixing, or volumes measured imprecisely.",
+      "Filtration extremely slow: sample volume too large, or filter blinded by fine solids — use a smaller volume.",
+      "Mass keeps changing between weighings: incomplete drying or exhausted desiccant.",
+      "MLVSS higher than MLSS (impossible): weighing or recording error — check the tare and ignition masses.",
+      "Sudden MLSS shift with no operational change: verify the sample point and that the sample was taken from a mixed zone."
+    ],
+    "safetyNotes": [
+      "The muffle furnace operates at 550 °C — use long tongs, heat-resistant gloves, and a face shield, and never place hot items on flammable surfaces.",
+      "Allow ignited filters to cool in air briefly before placing them in a desiccator, or the desiccator lid can be blown off.",
+      "Wastewater samples are a biohazard — gloves and hand washing required.",
+      "Never place a hot dish on the analytical balance."
+    ],
     "calcRef": "wastewater-mlss"
   },
   {
     "id": "wastewater-svi-sm2710d",
     "domain": "wastewater",
-    "title": "Settleability / Sludge Volume Index (SVI) Test",
-    "methodRef": "Standard Methods 2710D",
-    "aliases": ["SVI", "settleability", "settleometer"],
-    "equipment": ["1-liter graduated cylinder or settleometer"],
-    "reagents": [],
-    "steps": [
-      "Fill a 1-liter graduated cylinder with a well-mixed mixed liquor sample.",
-      "Let the sample settle undisturbed for 30 minutes.",
-      "Record the settled sludge volume (SSV30) in mL/L.",
-      "Measure MLSS on a companion sample (see MLSS/MLVSS procedure).",
-      "Calculate SVI using the SVI calculator with SSV30 and MLSS."
+    "title": "Settleability and Sludge Volume Index (SVI)",
+    "methodRef": "Standard Methods 2710D (settled sludge volume) / 2710 SVI calculation",
+    "aliases": ["SVI", "settleability", "settleometer", "30 minute settling", "sludge settling"],
+    "frequency": "Daily, at the same time each day — consistency of timing is what makes the trend meaningful",
+    "holdingTime": "Start the test immediately after collection; sludge character changes within minutes",
+    "equipment": [
+      "1 litre graduated cylinder or Mallory settleometer",
+      "Timer",
+      "Thermometer",
+      "Sample container for the parallel MLSS determination"
     ],
-    "safetyNotes": [],
+    "reagents": [],
+    "interferences": [
+      "Temperature affects settling rate — record it, and be cautious comparing results across seasons.",
+      "Vibration or draughts disturb settling and give inconsistent results; place the cylinder somewhere stable.",
+      "Delays between collection and starting the test change the result.",
+      "A cylinder of different diameter gives different results — always use the same vessel."
+    ],
+    "steps": [
+      "Collect a fresh, well-mixed mixed liquor sample from the aeration basin outlet (or the site's designated point), while the basin is mixing.",
+      "Start the test immediately. Fill the 1 litre cylinder to the mark, pouring gently to avoid shearing the floc.",
+      "Start the timer as soon as the cylinder is filled, and place it where it will not be disturbed or heated by sunlight.",
+      "Record the sludge interface level at intervals — 5, 10, 15, 20, 30 minutes. The shape of the settling curve is far more informative than the 30-minute value alone.",
+      "Observe and note the settling character: a well-settling sludge forms a distinct, sharp interface and compacts cleanly, leaving a clear supernatant.",
+      "Note the supernatant clarity and whether any pin floc, straggler floc, or floating sludge is present.",
+      "At exactly 30 minutes, record the settled sludge volume (SSV30) in mL/L.",
+      "Determine MLSS on a parallel sample of the same mixed liquor using the gravimetric MLSS procedure.",
+      "Enter SSV30 and MLSS into the SVI calculator.",
+      "INTERPRET the SVI: values around 80-150 mL/g generally indicate good settling. Above roughly 150 mL/g suggests bulking (often filamentous); well below 80 mL/g suggests a dense, possibly old or pin-floc sludge that may settle fast but leave a turbid supernatant.",
+      "If SVI is rising, look at the settling curve and supernatant together — slow settling with a distinct interface points toward filamentous bulking, while a cloudy supernatant with fast settling points toward floc deflocculation or excessive sludge age.",
+      "Where bulking is suspected, examine the sludge microscopically for filaments before making large process changes.",
+      "Log SSV30, MLSS, calculated SVI, temperature, settling observations, and supernatant clarity in the Logbook. Trend SVI daily — the direction of travel matters more than any single value."
+    ],
+    "qualityControl": [
+      "Run the test at the same time each day from the same sample point with the same vessel.",
+      "Record temperature with every test.",
+      "Pair every SVI with an MLSS from the same sample — an SVI calculated from a stale MLSS is meaningless.",
+      "Note any deviation from routine (basin upset, storm flow, chemical dosing change) alongside the result."
+    ],
+    "troubleshooting": [
+      "Sludge will not settle at all: severe bulking, or a toxic/shock load has deflocculated the sludge.",
+      "Sludge rises after initially settling: denitrification in the cylinder producing nitrogen bubbles — this predicts rising sludge in the clarifier.",
+      "Interface indistinct: dispersed growth or deflocculation; check for toxicity, low DO, or very low sludge age.",
+      "SVI jumps day to day with no process change: check sampling consistency (point, time, vessel) before suspecting the process."
+    ],
+    "safetyNotes": [
+      "Wastewater is a biohazard — gloves, no aerosols, wash hands after handling.",
+      "Handle 1 L glass cylinders carefully; they are top-heavy when full."
+    ],
     "calcRef": "wastewater-svi"
   },
   {
     "id": "wastewater-do-sm4500og",
     "domain": "wastewater",
-    "title": "Dissolved Oxygen — Membrane Electrode Method",
-    "methodRef": "Standard Methods 4500-O G",
-    "aliases": ["DO test", "dissolved oxygen", "DO meter"],
-    "equipment": ["DO meter with membrane electrode probe"],
-    "reagents": ["Membrane electrode calibration solution (or water-saturated air calibration)"],
-    "steps": [
-      "Calibrate the DO meter per manufacturer instructions (air calibration or a known standard).",
-      "Immerse the probe in the sample, maintaining adequate flow/stirring across the membrane per meter requirements.",
-      "Allow the reading to stabilize; record DO (mg/L) and temperature.",
-      "Use the DO % Saturation calculator with water temperature and barometric pressure correction to evaluate percent saturation."
+    "title": "Dissolved Oxygen — Membrane Electrode / Optical Method",
+    "methodRef": "Standard Methods 4500-O G (membrane electrode) / 4500-O H (optical)",
+    "aliases": ["DO test", "dissolved oxygen", "DO meter", "oxygen probe", "luminescent DO"],
+    "frequency": "Continuous on-line in aeration basins where fitted, plus bench/field verification per shift",
+    "holdingTime": "MEASURE IN SITU — DO changes immediately on sampling due to atmospheric exchange and ongoing biological activity",
+    "equipment": [
+      "DO meter with membrane or optical (luminescent) probe",
+      "Probe with stirring capability, or a means of maintaining flow across the membrane",
+      "Thermometer (usually integral to the probe)",
+      "Barometer or local barometric pressure reading"
     ],
-    "safetyNotes": [],
+    "reagents": ["Membrane and electrolyte replacement kit (membrane probes)", "Zero-DO solution (sodium sulfite) for zero verification"],
+    "interferences": [
+      "Membrane probes CONSUME oxygen at the membrane, so they require continuous flow or stirring — a stagnant reading falls continuously and reads falsely low. This is the most common DO measurement error.",
+      "A fouled, wrinkled, or damaged membrane gives slow, low, and drifting readings.",
+      "Temperature and barometric pressure both affect oxygen saturation and must be accounted for.",
+      "Biological activity in a grab sample continues consuming oxygen, so the result falls with time.",
+      "Optical probes are less flow-sensitive but their sensing caps age and need replacement on schedule."
+    ],
+    "steps": [
+      "Inspect the probe. For a membrane probe, check the membrane is smooth, intact, and free of bubbles or fouling; replace membrane and electrolyte per schedule. For an optical probe, check the sensing cap is clean and within its service life.",
+      "CALIBRATE in water-saturated air: place the probe in the calibration sleeve with a damp sponge, keeping the sensor out of direct contact with water, and allow the temperature and reading to stabilise fully before accepting.",
+      "Enter or confirm the local barometric pressure (or altitude) if the meter requires it — an incorrect pressure shifts every subsequent reading.",
+      "Verify the zero point with a sodium sulfite solution at the frequency your QA programme requires.",
+      "MEASURE IN SITU wherever possible. Lower the probe directly into the aeration basin at the standard depth and location used for trending.",
+      "Ensure adequate flow across the sensor: use the probe's stirrer, or move the probe steadily through the water. For a membrane probe, a still reading is not a valid reading.",
+      "Allow the reading to stabilise fully — this can take a minute or more from a large temperature change — then record DO in mg/L and the temperature.",
+      "Take readings at several points across the basin, not just one. DO gradients across an aeration basin are normal and informative; a single point can hide both dead zones and over-aerated zones.",
+      "Enter the temperature, measured DO, and barometric pressure correction into the DO % Saturation calculator to convert to percent saturation, which is more comparable across temperatures than raw mg/L.",
+      "INTERPRET for process control: conventional activated sludge typically targets around 1.5-2.0 mg/L in the aeration basin. Consistently below about 0.5 mg/L risks filamentous bulking and failed nitrification; consistently high wastes a great deal of blower energy and can break up floc.",
+      "Cross-check against ammonia results — nitrification failing while DO looks adequate points to sludge age or toxicity rather than aeration.",
+      "Rinse the probe with clean water after use and store per the manufacturer's instructions (membrane probes are stored wet).",
+      "Log DO readings by location, temperature, percent saturation, and blower/aeration settings in the Logbook."
+    ],
+    "qualityControl": [
+      "Calibrate daily before the first reading and record the calibration.",
+      "Verify zero with sodium sulfite on the QA schedule.",
+      "Compare the hand-held reading against the on-line basin instrument at the same point and time; a persistent offset means one of them needs attention.",
+      "Track membrane/cap replacement dates — performance degrades gradually and is easy to miss.",
+      "Record barometric pressure used for calibration."
+    ],
+    "troubleshooting": [
+      "Reading falls steadily while the probe sits in the sample: insufficient flow across a membrane probe. Stir or move the probe.",
+      "Slow response and low readings: fouled or damaged membrane, or depleted electrolyte — service the probe.",
+      "Calibration will not hold: membrane, electrolyte, or sensing cap at end of life.",
+      "Field and on-line readings disagree: verify both calibrations and confirm the hand-held probe is at the same depth and location as the installed sensor.",
+      "DO reads high but the process behaves as if oxygen-limited: check for short-circuiting or dead zones — measure at multiple points."
+    ],
+    "safetyNotes": [
+      "Working at basin edges is a drowning and fall hazard — use the site's fall protection, work with a colleague, and never lean over a handrail.",
+      "Wastewater is a biohazard; wear gloves and wash hands after handling probes.",
+      "Sodium sulfite zero solution is an irritant."
+    ],
     "calcRef": "wastewater-do-saturation"
   },
   {
     "id": "wastewater-was-ras-sampling",
     "domain": "wastewater",
     "title": "WAS / RAS Sampling Procedure",
-    "methodRef": "Standard site sampling practice",
-    "aliases": ["waste activated sludge", "return activated sludge", "WAS", "RAS"],
-    "equipment": ["Sample bottles/containers"],
+    "methodRef": "Standard plant sampling practice",
+    "aliases": ["waste activated sludge", "return activated sludge", "WAS", "RAS", "sludge sampling"],
+    "frequency": "Daily, at a consistent time, matched to the mixed liquor sampling round",
+    "holdingTime": "Analyse within 24 h at 4 °C; settleability and DO must be done immediately",
+    "equipment": ["Clean, labelled sample containers", "Sampling pole or tap access", "Gloves and eye protection", "Container for transport"],
     "reagents": [],
-    "steps": [
-      "Identify the correct sampling point for WAS (wasting line) or RAS (return line) per the plant's flow diagram.",
-      "Flush the sample tap briefly before collecting, if applicable.",
-      "Collect a well-mixed, representative sample in a clean container.",
-      "Run required tests promptly (e.g. TSS/VSS, settleability) since activated sludge changes character quickly once collected.",
-      "Log sample time, location, and results in the Logbook."
+    "interferences": [
+      "Sampling from a stagnant line gives sludge that has been sitting, not the sludge currently being pumped.",
+      "Sludge is highly non-homogeneous; a single grab from a poorly mixed point is not representative.",
+      "Sampling at inconsistent times relative to the wasting cycle produces trends that reflect the sampling, not the process."
     ],
-    "safetyNotes": ["Treat activated sludge as a biohazard — wear gloves and wash hands after handling."],
-    "calcRef": null
+    "steps": [
+      "Identify the correct sample point from the plant flow diagram — RAS from the return line, WAS from the wasting line. Confirm you are sampling the stream you intend.",
+      "Confirm the relevant pump is RUNNING before sampling. Sampling a WAS line while the wasting pump is off gives a stale, unrepresentative sample.",
+      "Flush the sample tap for long enough to clear the line of standing material before collecting.",
+      "Collect into a clean, clearly labelled container. Label it at the moment of collection — WAS and RAS samples look identical.",
+      "Fill the container leaving a little headspace so it can be mixed before subsampling.",
+      "Record the time, the pump running status, and the current wasting rate at the moment of sampling — the result cannot be interpreted without the wasting rate.",
+      "Deliver to the bench promptly and mix thoroughly immediately before taking any subsample.",
+      "Run the required analyses: TSS/VSS by the gravimetric procedure, and settleability where applicable.",
+      "Use the WAS TSS concentration and the wasting flow rate to calculate the mass of solids wasted per day in kg/day, and enter it into the Sludge Age (SRT) calculator.",
+      "Cross-check the SRT result against the site's target sludge age. SRT is the single most important activated sludge control parameter — nitrification in particular depends on holding enough sludge age at the current temperature.",
+      "Log the WAS/RAS concentrations, wasting rate, calculated SRT, and any wasting adjustment in the Logbook."
+    ],
+    "qualityControl": [
+      "Sample at the same time each day relative to the wasting cycle.",
+      "Confirm and record pump running status with every sample.",
+      "Run duplicates periodically; sludge heterogeneity means duplicates are less repeatable than clear-water analyses.",
+      "Reconcile calculated solids inventory against the measured MLSS trend — if SRT says one thing and MLSS trend says another, check the wasting flow measurement."
+    ],
+    "troubleshooting": [
+      "WAS concentration much lower than RAS: the wasting line may be drawing from the wrong point, or the pump was off during sampling.",
+      "SRT calculation gives an implausible value: check the wasting flow measurement first, since flow error usually dominates.",
+      "Day-to-day SRT swings with steady operation: inconsistent sampling time relative to intermittent wasting — sample consistently or use a flow-proportional composite.",
+      "RAS concentration falling: possible clarifier sludge blanket issue or excessive return rate diluting the sludge."
+    ],
+    "safetyNotes": [
+      "Activated sludge is a biohazard — wear gloves and eye protection, avoid aerosols and splashing, and wash hands thoroughly.",
+      "Sample points near moving pumps and valves present mechanical hazards; follow lockout requirements before opening anything beyond a sample tap.",
+      "Watch for slip hazards around sludge sample points."
+    ],
+    "calcRef": "wastewater-srt"
   }
 ]

@@ -3,18 +3,23 @@ export default {
   domain: 'wastewater',
   title: 'F/M Ratio',
   subtitle: 'Food-to-microorganism ratio for the aeration basin',
-  procedureRef: 'wastewater-mlss-mlvss-sm2540',
+  procedureRef: 'wastewater-bod5-sm5210b',
   inputs: [
-    { id: 'flow', label: 'Plant Flow', unit: 'MGD' },
+    { id: 'flow', label: 'Plant Flow', unit: 'm³/day' },
     { id: 'bod', label: 'Influent BOD', unit: 'mg/L' },
-    { id: 'aerationVolume', label: 'Aeration Basin Volume', unit: 'MG' },
+    { id: 'aerationVolume', label: 'Aeration Basin Volume', unit: 'm³' },
     { id: 'mlvss', label: 'MLVSS', unit: 'mg/L' },
   ],
   compute({ flow, bod, aerationVolume, mlvss }) {
-    const massLbs = aerationVolume * mlvss * 8.34;
-    if (!(massLbs > 0)) throw new Error('Aeration volume and MLVSS must be greater than 0');
-    const foodLbs = flow * bod * 8.34;
-    const fm = foodLbs / massLbs;
-    return { 'F/M Ratio': { value: fm, unit: 'lb BOD/lb MLVSS/day', decimals: 3 } };
+    // 1 mg/L = 1 g/m³ throughout, so units cancel without conversion factors
+    const massKg = (aerationVolume * mlvss) / 1000;
+    if (!(massKg > 0)) throw new Error('Aeration volume and MLVSS must be greater than 0');
+    const foodKgPerDay = (flow * bod) / 1000;
+    const fm = foodKgPerDay / massKg;
+    return {
+      'F/M Ratio': { value: fm, unit: 'kg BOD/kg MLVSS/day', decimals: 3 },
+      'BOD Load': { value: foodKgPerDay, unit: 'kg/day' },
+      'MLVSS Mass': { value: massKg, unit: 'kg' },
+    };
   },
 };

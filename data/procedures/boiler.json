@@ -1,110 +1,589 @@
 [
   {
+    "id": "boiler-calculated-ph-cycle-chemistry",
+    "domain": "boiler",
+    "title": "Calculated pH from Specific Conductivity (Cycle Chemistry)",
+    "methodRef": "Cycle chemistry practice for all-volatile treatment (AVT); basis EPRI/ASME feedwater guidelines",
+    "aliases": ["calculated pH", "conductivity pH", "AVT", "ammonia pH", "cation conductivity", "high purity pH"],
+    "frequency": "Every shift on feedwater and condensate; continuously where on-line instruments are fitted",
+    "holdingTime": "ANALYSE ON-LINE OR IMMEDIATELY — high-purity samples absorb CO2 from air within seconds and the reading is then meaningless",
+    "equipment": [
+      "On-line or bench specific conductivity meter with automatic temperature compensation to 25 °C",
+      "Cation (acid) conductivity column and meter",
+      "Sample cooler and flow-through cell (a flowing sample is essential)",
+      "Low-ionic-strength pH electrode with flow cell (for comparison only)"
+    ],
+    "reagents": ["Conductivity calibration standard (low range)", "Cation exchange resin (hydrogen form) for the cation column"],
+    "interferences": [
+      "Atmospheric CO2 is the dominant error source — a grab sample exposed to air gains conductivity and loses pH within seconds. Always sample from a flowing, closed line.",
+      "Any contamination (condenser leak, carryover, resin fines) invalidates the calculation entirely, because the method assumes the alkalising agent is the ONLY significant ionic species.",
+      "If an amine other than ammonia is dosed (morpholine, cyclohexylamine, ETA), the cation conductivity constant differs and the ammonia-based result will be wrong.",
+      "A conductivity reading not compensated to 25 °C will give a badly wrong pH — confirm the meter's compensation is active and set correctly."
+    ],
+    "steps": [
+      "CONFIRM THE METHOD APPLIES: this calculation is valid only for high-purity cycle water (feedwater, condensate, makeup) dosed with ammonia or an amine. It is NOT valid for boiler drum water with solid alkali (phosphate/caustic), cooling water, or raw water.",
+      "Establish a continuous flow through the sample cooler and conditioning system. Let the sample flow long enough to fully purge the line — a stagnant line reads the previous condition, not the current one.",
+      "Verify the sample temperature at the analyser is within the meter's range and that automatic temperature compensation to 25 °C is enabled.",
+      "Read and record the SPECIFIC conductivity (µS/cm at 25 °C) from the flowing sample.",
+      "Read and record the CATION (acid) conductivity from the same sample point. This is the critical validity check: it strips the ammonia and leaves only contaminant anions.",
+      "ASSESS VALIDITY BEFORE CALCULATING: cation conductivity should be very low relative to specific conductivity (typically well under 0.2 µS/cm on a clean cycle). If cation conductivity is elevated or climbing, the sample is contaminated — investigate the source and do NOT report a calculated pH as if it were valid.",
+      "Enter the specific conductivity into the pH from Specific Conductivity calculator, along with the cation conductivity for the contamination ratio check.",
+      "If an amine other than ammonia is in use, change the cation equivalent conductivity input to the value supplied by your chemical vendor for that amine. The 73.5 default is ammonia.",
+      "Compare the calculated pH to the on-line pH instrument reading. In clean high-purity water the calculated value is generally the MORE reliable of the two, because glass pH electrodes respond poorly in low-conductivity water.",
+      "If calculated and measured pH disagree by more than the site's tolerance: suspect the pH electrode first (calibration, ageing, low-ionic-strength error, grounding), then suspect contamination — check whether cation conductivity moved at the same time.",
+      "Use the Expected Conductivity from Target pH calculator in reverse to set or verify the control band: it gives the specific conductivity that should correspond to your target cycle pH, plus the ammonia concentration needed to hold it.",
+      "Log specific conductivity, cation conductivity, calculated pH, measured pH, and ammonia feed rate together in the Logbook. Trending all of them side by side is what identifies a developing condenser leak early."
+    ],
+    "qualityControl": [
+      "Verify the conductivity meter against a low-range standard on the schedule set by your QA programme; low-range cells drift and foul.",
+      "Regenerate or replace the cation column resin per schedule — an exhausted column silently reports falsely low cation conductivity, hiding contamination.",
+      "Cross-check calculated pH against measured pH every shift and record both; a widening gap is itself a diagnostic.",
+      "Confirm the calculation is being used only within its valid range (clean, ammoniated high-purity water)."
+    ],
+    "troubleshooting": [
+      "Calculated pH much higher than measured pH: usually a tired or poorly grounded pH electrode in low-conductivity water — verify the electrode before changing chemical feed.",
+      "Specific conductivity rising while cation conductivity stays flat: more ammonia is being dosed — a feed rate change, not contamination.",
+      "BOTH specific and cation conductivity rising: contamination ingress (condenser leak, air in-leakage producing CO2, makeup breakthrough). Treat as a chemistry excursion and follow the site's action-level response.",
+      "Conductivity below the pure-water minimum of about 0.055 µS/cm: the reading or its temperature compensation is faulty — no real sample can read below this."
+    ],
+    "safetyNotes": [
+      "Sample lines carry high-temperature, high-pressure water — confirm the sample cooler is in service and the sample is at a safe temperature before opening any valve.",
+      "Never open a sample line whose cooling water flow is not confirmed.",
+      "Ammonia solutions release irritating vapour — handle feed chemicals in a ventilated area with eye protection."
+    ],
+    "calcRef": "boiler-ph-from-conductivity"
+  },
+  {
     "id": "boiler-coc-monitoring",
     "domain": "boiler",
     "title": "Cooling Tower Cycles of Concentration — Monitoring",
-    "methodRef": "Standard site monitoring practice",
-    "aliases": ["cycles of concentration", "COC", "cooling tower"],
-    "equipment": ["Conductivity meter or chloride test kit"],
-    "reagents": ["Chloride titration reagents (if using Cl- method)"],
-    "steps": [
-      "Collect a makeup water sample and a blowdown (or tower basin) water sample at the same time.",
-      "Measure conductivity (or chloride) on both samples using the same method.",
-      "Enter both values into the Cycles of Concentration calculator.",
-      "Compare the result to the target COC for the system; adjust blowdown rate if outside target range."
+    "methodRef": "Standard cooling water monitoring practice",
+    "aliases": ["cycles of concentration", "COC", "cooling tower", "concentration ratio"],
+    "frequency": "Daily on cooling towers; more often during high-load or high-evaporation periods",
+    "holdingTime": "Analyse promptly; conductivity and chloride are stable but biological activity can alter samples on standing",
+    "equipment": [
+      "Conductivity meter with temperature compensation",
+      "Chloride test kit or Hach digital titrator (alternative tracer)",
+      "Clean sample bottles, clearly labelled for makeup and blowdown"
     ],
-    "safetyNotes": [],
+    "reagents": ["Conductivity calibration standard", "Chloride titration reagents (silver nitrate / mercuric nitrate kit) if using the chloride method"],
+    "interferences": [
+      "The two samples MUST be taken at the same time — makeup quality varies through the day and comparing samples taken hours apart gives a meaningless ratio.",
+      "Any tracer that is added, consumed, or lost in the system is invalid. Conductivity is affected by treatment chemical dosing; chloride is usually the more reliable tracer where chemicals are dosed heavily.",
+      "Recent make-up surges, blowdown events, or heavy rain (on open towers) temporarily distort the ratio."
+    ],
+    "steps": [
+      "Collect a makeup water sample and a tower basin/blowdown sample at the SAME time, from established sample points.",
+      "Label both bottles immediately — mixing them up inverts the result.",
+      "Let both samples reach the same temperature before measuring, or rely on the meter's temperature compensation.",
+      "Calibrate/verify the conductivity meter against a standard.",
+      "Rinse the probe with deionised water then with sample, and measure the conductivity of the MAKEUP sample. Record it.",
+      "Rinse again and measure the conductivity of the BLOWDOWN/basin sample. Record it.",
+      "If using chloride as the tracer instead, titrate both samples per the chloride kit instructions and record both values in mg/L Cl.",
+      "Enter both values into the Cycles of Concentration calculator. Both inputs must be the same parameter and the same units.",
+      "Compare the result to the target COC for the system. Running below target wastes water and chemical; running above target risks scaling and fouling.",
+      "If the COC is off target, use the Cooling Tower Blowdown Rate calculator with the current evaporation rate to determine the blowdown rate needed to bring it back.",
+      "Before changing blowdown, check the corrosion inhibitor and biocide residuals — changing blowdown changes their concentration too.",
+      "Log makeup value, blowdown value, calculated COC, target COC, and any blowdown adjustment made in the Logbook."
+    ],
+    "qualityControl": [
+      "Verify the conductivity meter daily against a standard.",
+      "Cross-check the conductivity-based COC against a chloride-based COC periodically; a large disagreement means one tracer is being affected by treatment chemistry.",
+      "Track COC daily — a sudden change usually means a blowdown valve issue or a makeup water change, not a real chemistry shift.",
+      "Confirm sample points are the correct, established ones each time."
+    ],
+    "troubleshooting": [
+      "COC calculates as less than 1: the samples were swapped, or the makeup reading is contaminated. Repeat with fresh samples.",
+      "COC much higher than expected: blowdown valve may be closed, blocked, or failed shut — verify physically.",
+      "COC much lower than expected: blowdown stuck open, or excessive drift/leakage losses.",
+      "COC swings day to day with no operational change: check whether the makeup sample point is picking up recirculated water."
+    ],
+    "safetyNotes": [
+      "Cooling tower water may contain Legionella — avoid creating aerosols, wear appropriate PPE, and follow the site's cooling water sampling precautions.",
+      "Wash hands thoroughly after handling cooling water samples."
+    ],
     "calcRef": "boiler-coc"
   },
   {
     "id": "boiler-blowdown-sampling",
     "domain": "boiler",
     "title": "Boiler Blowdown — Procedure and Sampling",
-    "methodRef": "Standard site sampling practice",
-    "aliases": ["blowdown", "boiler blowdown sample"],
-    "equipment": ["Sample cooler (if sampling from a hot line)", "Sample bottles"],
-    "reagents": [],
-    "steps": [
-      "Confirm blowdown valve and sample cooler are in service and cooled to a safe handling temperature.",
-      "Flush the sample line for at least 1-2 minutes before collecting a sample.",
-      "Collect the sample in a clean bottle, avoiding overflow/splash.",
-      "Test boiler water TDS/conductivity and other required parameters promptly.",
-      "Use the Boiler % Blowdown calculator with feedwater and max allowed boiler TDS to verify blowdown rate is adequate.",
-      "Log results and any valve adjustments made in the Logbook."
+    "methodRef": "Standard boiler water sampling practice (ASME guidance basis)",
+    "aliases": ["blowdown", "boiler blowdown sample", "drum water sample", "TDS control"],
+    "frequency": "Per shift on operating boilers; after any load change or chemistry excursion",
+    "holdingTime": "Analyse promptly after cooling; keep the sample capped to limit CO2 pick-up",
+    "equipment": [
+      "Sample cooler with confirmed cooling water flow",
+      "Heat-resistant gloves and face shield",
+      "Clean sample bottles",
+      "Conductivity meter, pH meter, and any reagent test kits required by the treatment programme"
     ],
-    "safetyNotes": ["Blowdown water and lines can be extremely hot — use proper PPE and allow cooling before direct sampling."],
+    "reagents": [],
+    "interferences": [
+      "An inadequately flushed sample line gives the previous sample's chemistry, not the current boiler condition.",
+      "A hot sample gives wrong conductivity and pH readings and is a burn hazard — always cool to a controlled temperature first.",
+      "Samples left open absorb CO2, lowering pH and raising conductivity."
+    ],
+    "steps": [
+      "BEFORE OPENING ANY VALVE: confirm the sample cooler is in service and cooling water is flowing. Verify by touch on the cooling water outlet, not by assumption.",
+      "Put on heat-resistant gloves and a face shield. Boiler water is at drum pressure and temperature.",
+      "Crack the sample valve open slowly. Never open a boiler sample valve quickly — flashing steam causes severe burns.",
+      "Flush the sample line for at least 1-2 minutes, and long enough for the sample temperature to stabilise at the cooler outlet. Confirm the sample is at a safe handling temperature (typically below 40 °C) before collecting.",
+      "Rinse the sample bottle with the flowing sample, then fill it, capping immediately to limit CO2 absorption.",
+      "Close the sample valve fully and confirm it is not passing.",
+      "Measure pH and conductivity promptly on the cooled sample, plus any programme-specific parameters (phosphate, sulfite, silica, alkalinity).",
+      "Enter the feedwater TDS and the maximum allowed boiler water TDS into the Boiler % Blowdown calculator to determine the blowdown percentage required.",
+      "Compare the measured boiler water TDS/conductivity to the site limit for the operating pressure. Exceeding the limit risks carryover, foaming, and turbine or superheater deposits.",
+      "Adjust continuous blowdown as required, in small increments, and re-sample after the system has had time to respond — do not chase the reading with large rapid changes.",
+      "Verify intermittent (bottom) blowdown is being carried out per schedule; it removes settled sludge that continuous blowdown does not.",
+      "Log the sample time, boiler ID, all measured parameters, blowdown setting before and after, and any adjustment made in the Logbook."
+    ],
+    "qualityControl": [
+      "Confirm meters are calibrated before the shift's first sample.",
+      "Trend boiler water conductivity against feedwater conductivity — the ratio should be consistent with the blowdown rate in service.",
+      "Repeat any result that exceeds a control limit on a fresh sample before taking corrective action.",
+      "Record the sample cooler outlet temperature; a rising trend means the cooler is fouling."
+    ],
+    "troubleshooting": [
+      "Boiler TDS climbing despite blowdown at setpoint: blowdown valve passing insufficient flow, blocked line, or increased feedwater solids — check feedwater quality and the valve.",
+      "Boiler TDS falling rapidly with no setting change: blowdown valve failed open, or a sudden rise in condensate return fraction.",
+      "Sample too hot at the cooler outlet: cooling water flow inadequate or cooler fouled. STOP and correct before continuing.",
+      "pH drifting down across the shift with stable conductivity: possible CO2 absorption in sampling, or loss of alkalinity control."
+    ],
+    "safetyNotes": [
+      "SCALDING HAZARD: boiler water is above 100 °C at pressure and flashes to steam on release. Never sample without a functioning sample cooler.",
+      "Open sample valves slowly and stand to the side of the discharge.",
+      "Boiler water is highly alkaline and causes severe eye and skin burns — full PPE including face shield is required.",
+      "Never leave a boiler sample valve unattended while open."
+    ],
     "calcRef": "boiler-percent-blowdown"
   },
   {
-    "id": "boiler-silica-sm4500sio2",
+    "id": "boiler-silica-hach-8185",
     "domain": "boiler",
-    "title": "Silica Testing — Colorimetric Method",
-    "methodRef": "Standard Methods 4500-SiO2",
-    "aliases": ["silica test", "SiO2"],
-    "equipment": ["Colorimeter or spectrophotometer", "Sample cells"],
-    "reagents": ["Molybdate reagent", "Acid reagent", "Reducing agent (e.g. amino acid reagent)"],
-    "steps": [
-      "Collect a representative boiler water (or feedwater) sample in a silica-free container.",
-      "Add molybdate reagent and allow color development per kit instructions.",
-      "Add acid reagent to eliminate phosphate interference.",
-      "Add reducing agent and wait the specified development time.",
-      "Read silica concentration on the colorimeter/spectrophotometer.",
-      "Compare the result against the maximum allowed silica for the operating pressure using the Silica Carryover Check calculator."
+    "title": "Silica — Hach Silicomolybdate (DR6000)",
+    "methodRef": "Hach Method 8185 — Silicomolybdate; equivalent to SM 4500-SiO2 C",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8185 — Silicomolybdate (high range). Method 8186 (Heteropoly Blue) for low range.",
+    "range": "1 – 100 mg/L SiO2 (silicomolybdate); use the low-range heteropoly blue method below 1 mg/L",
+    "sampleVolume": "10 mL sample cell",
+    "wavelength": "452 nm (set automatically by the stored program)",
+    "aliases": ["silica", "SiO2", "silicomolybdate", "hach 8185", "DR6000 silica", "carryover"],
+    "frequency": "Daily on boiler water and feedwater; every shift on high-pressure units",
+    "holdingTime": "Analyse within 24 h. NEVER store samples in glass — glass leaches silica and biases results high. Use plastic bottles only.",
+    "equipment": [
+      "Hach DR6000 spectrophotometer",
+      "Matched 10 mL sample cells",
+      "PLASTIC sample bottles (not glass)",
+      "Lint-free wipes",
+      "Pipettes for reagent addition"
     ],
-    "safetyNotes": ["Handle acid reagent with gloves and eye protection."],
+    "reagents": [
+      "Molybdate 3 reagent",
+      "Acid reagent (for silica)",
+      "Citric acid reagent powder pillows",
+      "Deionised, silica-free water for the blank"
+    ],
+    "interferences": [
+      "PHOSPHATE is the major interference — the citric acid step exists specifically to destroy the phosphomolybdate complex and MUST NOT be skipped or shortened. Boiler water on a phosphate programme always contains phosphate.",
+      "Glass containers and glass pipettes leach silica into the sample. Use plastic throughout wherever possible.",
+      "Sulfide and high colour interfere.",
+      "Reaction timing is critical — this method depends on a timed sequence, not just a final reading."
+    ],
+    "steps": [
+      "Collect the sample in a clean PLASTIC bottle. Cool boiler water samples through the sample cooler first and let them reach room temperature.",
+      "Power on the DR6000 and select the stored program for silica by the silicomolybdate method (Hach Method 8185). Confirm the program on the instrument — program numbers vary by firmware; the method number is the stable reference.",
+      "Fill a clean sample cell to the 10 mL mark with sample.",
+      "Add the molybdate 3 reagent as specified in the Hach procedure and swirl to mix.",
+      "Start the instrument timer for the molybdate reaction period and let it run to completion. During this period the silicomolybdate (and any phosphomolybdate) complex forms.",
+      "Add the citric acid reagent, swirl to dissolve, and start the second timed period. This step destroys the phosphate interference — do not read before this timer completes.",
+      "PREPARE THE BLANK using the untreated sample in a second matched cell (per the Hach procedure for this method).",
+      "Wipe both cells thoroughly with a lint-free wipe before every insertion.",
+      "Insert the blank, close the lid, and press ZERO.",
+      "Insert the prepared sample in the same orientation, close the lid, and press READ. Record the result in mg/L SiO2.",
+      "If the result is above the method range, dilute with silica-free deionised water using plastic labware, re-run, and multiply by the dilution factor.",
+      "Enter the boiler water silica result and the maximum allowed silica for your operating pressure (from the ASME/manufacturer chart) into the Silica Carryover Check calculator.",
+      "Interpret against operating pressure: allowable silica falls sharply as drum pressure rises, because volatile silica carryover into steam causes hard, non-removable turbine blade deposits.",
+      "If silica is approaching the limit, increase blowdown and investigate the source — usually makeup water breakthrough from an exhausted demineraliser or softener.",
+      "Log the silica result, the drum pressure, the limit applied, and any blowdown change in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a silica-free deionised water blank with each batch — a positive blank usually means glass contamination somewhere in the process.",
+      "Verify against a known silica standard on the QA schedule.",
+      "Run a duplicate on every 10th sample.",
+      "Record reagent lot numbers and expiry dates; silica reagents degrade and give low results when old."
+    ],
+    "troubleshooting": [
+      "Results consistently biased high: silica contamination from glassware — switch entirely to plastic and re-run.",
+      "Results biased high on a phosphate-treated boiler: the citric acid step was skipped or under-timed. Repeat with full timing.",
+      "Result unexpectedly low on a known-high sample: check for over-range (dilute and repeat) and confirm reagent is in date.",
+      "Poor reproducibility: timing is being applied inconsistently — use the instrument timer for every step, every time."
+    ],
+    "safetyNotes": [
+      "Acid and molybdate reagents are corrosive and irritant — wear gloves and eye protection.",
+      "Cool boiler water samples fully before handling; see the boiler sampling procedure for scalding precautions.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
     "calcRef": "boiler-silica-carryover"
   },
   {
-    "id": "boiler-phosphate-sm4500p",
+    "id": "boiler-phosphate-hach-8048",
     "domain": "boiler",
-    "title": "Phosphate Residual — Colorimetric Method",
-    "methodRef": "Standard Methods 4500-P",
-    "aliases": ["phosphate test", "PO4 residual"],
-    "equipment": ["Colorimeter", "Sample cells"],
-    "reagents": ["Phosphate reagent (vanadomolybdophosphoric or equivalent)"],
-    "steps": [
-      "Collect a boiler water sample and allow it to cool to room temperature.",
-      "Fill the sample cell to the fill line.",
-      "Add the phosphate reagent and mix per kit instructions.",
-      "Wait the specified reaction time, then read on the colorimeter.",
-      "Compare the reading to the target residual; use the Phosphate Residual Dosing calculator to adjust chemical feed if needed."
+    "title": "Phosphate, Reactive — Hach PhosVer 3 (DR6000)",
+    "methodRef": "Hach Method 8048 — PhosVer 3 (ascorbic acid); equivalent to SM 4500-P E",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8048 — PhosVer 3 powder pillows (ascorbic acid method)",
+    "range": "0.02 – 2.50 mg/L PO4 (dilute boiler water samples, which are normally well above this)",
+    "sampleVolume": "10 mL sample cell",
+    "reactionTime": "2 minutes",
+    "wavelength": "880 nm (set automatically by the stored program)",
+    "aliases": ["phosphate", "PO4", "orthophosphate", "PhosVer", "hach 8048", "DR6000 phosphate", "phosphate residual"],
+    "frequency": "Per shift on boilers under a phosphate treatment programme",
+    "holdingTime": "Analyse within 48 h; store at 4 °C. Do not use containers washed with phosphate-containing detergent.",
+    "equipment": [
+      "Hach DR6000 spectrophotometer",
+      "Matched 10 mL sample cells",
+      "Volumetric flasks and pipettes for dilution (boiler water almost always needs diluting)",
+      "Lint-free wipes"
     ],
-    "safetyNotes": [],
+    "reagents": ["PhosVer 3 phosphate powder pillows, 10 mL", "Deionised water for dilution and blank"],
+    "interferences": [
+      "PHOSPHATE-CONTAINING DETERGENTS are a serious contamination source — never wash silica or phosphate glassware with them. Rinse thoroughly with deionised water.",
+      "High turbidity or colour in the sample biases results; filter if necessary.",
+      "Large amounts of iron or silica interfere at their upper limits.",
+      "The blue colour continues to develop with time — read within the window specified by the method for consistent results."
+    ],
+    "steps": [
+      "Collect a boiler water sample through the sample cooler and allow it to cool to room temperature.",
+      "DILUTE FIRST: boiler water phosphate residuals are typically maintained well above the 2.50 mg/L method range. Prepare an accurate dilution with deionised water (e.g. 1:10 or 1:20) using volumetric glassware, and record the exact dilution factor.",
+      "Select the stored program for reactive phosphorus by PhosVer 3 (Hach Method 8048) on the DR6000. Confirm the program on the instrument.",
+      "PREPARE THE BLANK: fill a clean cell to the 10 mL mark with the diluted, unreacted sample.",
+      "Wipe the blank cell with a lint-free wipe, insert it, close the lid, and press ZERO.",
+      "PREPARE THE SAMPLE: fill the second matched cell to the 10 mL mark with the diluted sample.",
+      "Add the contents of one PhosVer 3 powder pillow, cap, and shake to dissolve.",
+      "Start the 2-minute instrument timer. A blue colour develops if phosphate is present.",
+      "When the timer expires, wipe the cell, insert it in the same orientation as the blank, and press READ.",
+      "Multiply the displayed result by the dilution factor to get the true boiler water phosphate concentration. Record both the raw reading and the corrected result so the dilution is auditable.",
+      "Compare to the target residual band for your treatment programme and drum pressure.",
+      "If the residual is off target, use the Phosphate Residual Dosing calculator with the feed/blowdown flow to determine the chemical feed adjustment in kg/day.",
+      "Consider the pH and phosphate together — congruent/coordinated phosphate programmes control both, and phosphate alone does not tell the full story.",
+      "Log the raw reading, dilution factor, corrected result, target band, and any dosing change in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a deionised water blank with reagent to confirm no phosphate contamination in glassware or water.",
+      "Verify against a prepared phosphate standard on the QA schedule.",
+      "Run a duplicate on every 10th sample; include the dilution step in the duplicate so dilution error is captured.",
+      "Record reagent lot and expiry."
+    ],
+    "troubleshooting": [
+      "Result at the very top of the range: dilution was insufficient — dilute further and repeat rather than reporting a near-range value.",
+      "Persistently high blank: glassware contaminated by phosphate detergent — re-wash and rinse thoroughly with deionised water.",
+      "Blue colour weak or absent on a sample known to contain phosphate: reagent expired, or the sample was over-diluted.",
+      "Poor duplicate agreement: the dilution step is the usual culprit — use volumetric glassware, not graduated cylinders."
+    ],
+    "safetyNotes": [
+      "PhosVer 3 reagent contains an acid salt — avoid skin and eye contact.",
+      "Cool boiler water samples fully before handling.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
     "calcRef": "boiler-phosphate-dose"
+  },
+  {
+    "id": "boiler-hydrazine-hach-8141",
+    "domain": "boiler",
+    "title": "Hydrazine — Hach p-Dimethylaminobenzaldehyde (DR6000)",
+    "methodRef": "Hach Method 8141 — p-Dimethylaminobenzaldehyde",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8141 — p-Dimethylaminobenzaldehyde (PDAB)",
+    "range": "Low µg/L to low mg/L N2H4 — confirm the exact range for your reagent set on the instrument",
+    "aliases": ["hydrazine", "N2H4", "oxygen scavenger", "hach 8141", "DR6000 hydrazine"],
+    "frequency": "Per shift on feedwater where hydrazine is the oxygen scavenger",
+    "holdingTime": "ANALYSE IMMEDIATELY — hydrazine oxidises rapidly on exposure to air and the result falls within minutes",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched sample cells", "Flow-through sampling arrangement", "Lint-free wipes"],
+    "reagents": ["Hydrazine reagent (PDAB) per the Hach method", "Deionised water for blank"],
+    "interferences": [
+      "Air exposure destroys hydrazine — sample from a flowing line into a filled, capped container with no headspace.",
+      "Other reducing agents and some amines can interfere.",
+      "Temperature affects colour development; blank and sample must match."
+    ],
+    "steps": [
+      "Sample from a flowing, cooled sample line. Fill the container completely with no air space and cap immediately.",
+      "Take the sample to the instrument and analyse without delay — hydrazine results are only meaningful when the test is run immediately.",
+      "Select the stored program for hydrazine (Hach Method 8141) on the DR6000 and confirm it matches your reagent set.",
+      "Prepare the blank and sample exactly per the Hach method sheet for this method, using the instrument's built-in timer for the colour development period.",
+      "Wipe both cells with a lint-free wipe before insertion.",
+      "Zero on the blank, then read the sample and record the result.",
+      "Compare to the target residual for your treatment programme. Too little hydrazine leaves dissolved oxygen free to cause pitting corrosion; excessive hydrazine wastes chemical and can contribute to ammonia formation in the cycle.",
+      "Cross-check against the dissolved oxygen reading from the same part of the cycle — the two should tell a consistent story.",
+      "Log the hydrazine residual, the dissolved oxygen result, the feed rate, and the sample point in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a deionised water blank with reagent.",
+      "Verify against a freshly prepared hydrazine standard on the QA schedule — hydrazine standards degrade, so prepare them fresh.",
+      "Duplicate results should be taken back-to-back, since the analyte itself decays with time."
+    ],
+    "troubleshooting": [
+      "Result reads near zero on a dosed system: almost always air exposure during sampling. Re-sample with no headspace and analyse immediately.",
+      "Results consistently drifting down through the shift: check the scavenger feed pump and the storage tank level.",
+      "Poor reproducibility: timing or air exposure. Use the instrument timer and minimise handling."
+    ],
+    "safetyNotes": [
+      "HYDRAZINE IS TOXIC AND A SUSPECTED CARCINOGEN. Handle with gloves and eye protection in a well-ventilated area; avoid inhaling vapour and avoid all skin contact.",
+      "Follow your site's specific controls for hydrazine handling and disposal — do not pour to drain without checking the site procedure.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
+  },
+  {
+    "id": "boiler-iron-hach-8008",
+    "domain": "boiler",
+    "title": "Iron, Total — Hach FerroVer (DR6000)",
+    "methodRef": "Hach Method 8008 — FerroVer (1,10-phenanthroline basis)",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8008 — FerroVer iron reagent powder pillows",
+    "range": "0.02 – 3.00 mg/L Fe",
+    "sampleVolume": "10 mL sample cell",
+    "reactionTime": "3 minutes",
+    "wavelength": "510 nm (set automatically by the stored program)",
+    "aliases": ["iron", "Fe", "FerroVer", "hach 8008", "DR6000 iron", "corrosion product"],
+    "frequency": "Weekly on feedwater and condensate; daily during commissioning, after chemical cleaning, or during a corrosion investigation",
+    "holdingTime": "Analyse promptly. For total iron, acidify to pH < 2 with nitric acid if storage is required — iron adsorbs onto container walls otherwise.",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched 10 mL sample cells", "Plastic or acid-washed sample bottles", "Lint-free wipes"],
+    "reagents": ["FerroVer Iron Reagent powder pillows, 10 mL", "Deionised water for blank", "Nitric acid for sample preservation (if storing)"],
+    "interferences": [
+      "Iron plates out onto container walls quickly — analyse fresh or acidify immediately.",
+      "Insoluble iron oxide particles (the main corrosion product of interest) may not fully dissolve without a digestion step; FerroVer dissolves most but not all forms.",
+      "High turbidity biases the result high — the blank correction handles sample colour but not particulates.",
+      "Strong oxidisers and high concentrations of copper interfere."
+    ],
+    "steps": [
+      "Collect the sample from a flowing, cooled sample line into an acid-washed plastic bottle. Corrosion product iron is often particulate, so collect a well-mixed representative sample.",
+      "Select the stored program for total iron by FerroVer (Hach Method 8008) on the DR6000 and confirm it on the instrument.",
+      "Fill a clean sample cell to the 10 mL mark with sample; this is the blank.",
+      "Fill the second matched cell to the 10 mL mark with sample and add the contents of one FerroVer powder pillow. Swirl to dissolve.",
+      "Start the 3-minute instrument timer. An orange colour develops if iron is present.",
+      "Wipe the blank cell, insert it, close the lid, and press ZERO.",
+      "When the timer expires, wipe the prepared cell, insert it in the same orientation, and press READ. Record the result in mg/L Fe.",
+      "Interpret in context: iron in feedwater and condensate is a direct measure of corrosion happening in the cycle. A rising trend indicates active corrosion even when pH and oxygen scavenger residuals look acceptable.",
+      "If iron is elevated, review feedwater pH (calculated pH from conductivity), oxygen scavenger residual, and dissolved oxygen together — iron is the outcome, those are the causes.",
+      "Log the result with the sample point and the corresponding pH/oxygen data in the Logbook, and trend it over weeks rather than judging a single reading."
+    ],
+    "qualityControl": [
+      "Run a deionised water blank with reagent.",
+      "Verify against an iron standard on the QA schedule.",
+      "Run duplicates on every 10th sample; particulate iron makes duplicates less repeatable than dissolved analytes, so poor agreement may be real sample heterogeneity.",
+      "Use acid-washed bottles dedicated to iron sampling."
+    ],
+    "troubleshooting": [
+      "Results scatter widely between duplicates: particulate iron is unevenly distributed — mix thoroughly and consider a digestion step for total iron.",
+      "Low results on a system with visible red/black deposits: iron is present as insoluble oxide that FerroVer alone is not dissolving; a digestion procedure is required.",
+      "High blank: contaminated cells or bottles — acid wash and rinse with deionised water."
+    ],
+    "safetyNotes": [
+      "FerroVer reagent is an irritant — avoid skin and eye contact.",
+      "Nitric acid used for preservation is highly corrosive and oxidising — handle in a fume hood with full PPE.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
+  },
+  {
+    "id": "boiler-copper-hach-8506",
+    "domain": "boiler",
+    "title": "Copper — Hach Bicinchoninate (DR6000)",
+    "methodRef": "Hach Method 8506 — Bicinchoninate",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8506 — CuVer / bicinchoninate powder pillows",
+    "range": "0.04 – 5.00 mg/L Cu",
+    "sampleVolume": "10 mL sample cell",
+    "wavelength": "560 nm (set automatically by the stored program)",
+    "aliases": ["copper", "Cu", "bicinchoninate", "CuVer", "hach 8506", "DR6000 copper", "condenser tube corrosion"],
+    "frequency": "Weekly on condensate and feedwater where copper alloys are present in the cycle",
+    "holdingTime": "Analyse promptly; acidify to pH < 2 for storage",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched 10 mL sample cells", "Acid-washed sample bottles", "Lint-free wipes"],
+    "reagents": ["CuVer / bicinchoninate copper reagent powder pillows", "Deionised water for blank"],
+    "interferences": [
+      "Copper adsorbs to container walls — use acid-washed bottles and analyse promptly.",
+      "High iron concentrations can interfere.",
+      "Sample turbidity biases results; the blank correction handles colour but not particulates."
+    ],
+    "steps": [
+      "Collect the sample from a flowing, cooled sample line into an acid-washed bottle.",
+      "Select the stored program for copper by the bicinchoninate method (Hach Method 8506) on the DR6000.",
+      "Fill a clean cell to the 10 mL mark with sample for the blank; wipe and zero the instrument on it.",
+      "Fill the second matched cell to the 10 mL mark, add one copper reagent powder pillow, and swirl to dissolve.",
+      "Run the instrument's timed reaction period. A purple colour develops if copper is present.",
+      "Wipe the cell, insert in the same orientation, and press READ. Record in mg/L Cu.",
+      "Interpret in context: copper in the cycle indicates corrosion of copper-alloy condenser tubes or feedwater heaters. Copper deposits on turbine blades and boiler tubes are particularly damaging and difficult to remove.",
+      "Review feedwater pH and ammonia together with copper — excessive ammonia in the presence of oxygen attacks copper alloys, so a high copper trend may mean the pH/ammonia setpoint needs review for a mixed-metallurgy cycle.",
+      "Log the result with the sample point, feedwater pH, and ammonia level in the Logbook and trend over time."
+    ],
+    "qualityControl": [
+      "Run a deionised water blank with reagent.",
+      "Verify against a copper standard on the QA schedule.",
+      "Run duplicates on every 10th sample.",
+      "Dedicate acid-washed glassware to trace metals work."
+    ],
+    "troubleshooting": [
+      "Low or zero result despite known copper corrosion: copper may be present as particulate oxide requiring digestion.",
+      "High blank: container or cell contamination — acid wash thoroughly.",
+      "Erratic results: adsorption losses; analyse fresh samples and acidify anything held."
+    ],
+    "safetyNotes": [
+      "Reagent is an irritant — avoid skin and eye contact.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
+  },
+  {
+    "id": "boiler-molybdate-hach-8036",
+    "domain": "boiler",
+    "title": "Molybdate (Corrosion Inhibitor) — Hach (DR6000)",
+    "methodRef": "Hach Method 8036 — Mercaptoacetic acid method for molybdenum/molybdate",
+    "instrument": "Hach DR6000 Spectrophotometer",
+    "hachMethod": "Method 8036 — molybdenum, high range",
+    "range": "0.3 – 40.0 mg/L Mo (confirm the range for your reagent set)",
+    "aliases": ["molybdate", "Mo", "corrosion inhibitor", "hach 8036", "DR6000 molybdate", "cooling water inhibitor"],
+    "frequency": "Daily to weekly on cooling systems dosed with a molybdate-based inhibitor, per the treatment programme",
+    "holdingTime": "Analyse within 24 h",
+    "equipment": ["Hach DR6000 spectrophotometer", "Matched sample cells", "Lint-free wipes"],
+    "reagents": ["Molybdenum reagent set per Hach Method 8036", "Deionised water for blank"],
+    "interferences": [
+      "Cooling water is often turbid and biologically active — filter the sample if turbidity is significant.",
+      "High concentrations of other treatment chemicals can interfere.",
+      "Sample and blank must be at the same temperature."
+    ],
+    "steps": [
+      "Collect a representative cooling system sample from an established, flowing sample point.",
+      "Filter the sample if it is visibly turbid, since suspended solids bias colorimetric readings.",
+      "Select the stored program for molybdenum (Hach Method 8036) on the DR6000.",
+      "Prepare the blank and sample per the Hach method sheet for your reagent set, using the instrument timer for each timed step.",
+      "Wipe both cells, zero on the blank, then read the sample and record the result.",
+      "Compare the inhibitor residual to the target band set by your chemical vendor. Under-dosing leaves metal unprotected; over-dosing wastes chemical and may create discharge compliance issues.",
+      "Consider the residual alongside the cycles of concentration — as COC changes, inhibitor concentration changes with it, so a residual drift may reflect a blowdown change rather than a feed problem.",
+      "Log the residual, the COC, the inhibitor feed rate, and any adjustment in the Logbook."
+    ],
+    "qualityControl": [
+      "Run a blank with each batch.",
+      "Verify against a standard on the QA schedule.",
+      "Run duplicates on every 10th sample.",
+      "Cross-check the residual trend against the chemical consumption from the day tank — a residual that falls while consumption stays flat suggests a system loss."
+    ],
+    "troubleshooting": [
+      "Residual falls with no feed change: increased blowdown, a system leak, or inhibitor consumption by fresh metal surfaces.",
+      "Residual climbs steadily: blowdown reduced or failed closed — verify COC.",
+      "Erratic results: sample turbidity — filter before analysis."
+    ],
+    "safetyNotes": [
+      "Molybdate reagents are irritants — avoid skin and eye contact.",
+      "Cooling water may contain Legionella — avoid aerosols and follow site precautions.",
+      "The definitive reference is the Hach method sheet for your reagent lot; this SOP is a bench summary."
+    ],
+    "calcRef": null
   },
   {
     "id": "boiler-sulfite-sm4500so3",
     "domain": "boiler",
     "title": "Sulfite Residual — Titration Method",
-    "methodRef": "Standard Methods 4500-SO3",
-    "aliases": ["sulfite test", "SO3 residual", "oxygen scavenger residual"],
-    "equipment": ["Burette or digital titrator", "Sample flask"],
-    "reagents": ["Standard titrant (e.g. phenylarsine oxide or iodine, per kit)", "Starch indicator (if applicable)"],
-    "steps": [
-      "Collect a fresh boiler water sample and test immediately (sulfite oxidizes quickly on exposure to air).",
-      "Measure the sample volume specified by the kit into a flask.",
-      "Add indicator and titrate to the specified endpoint.",
-      "Calculate residual using the kit's conversion, or the Sulfite Residual Dosing calculator to determine required feed adjustment."
+    "methodRef": "Standard Methods 4500-SO3 / Hach digital titrator Method 8071",
+    "aliases": ["sulfite test", "SO3 residual", "oxygen scavenger residual", "sulphite"],
+    "frequency": "Per shift on boilers using sulfite as the oxygen scavenger",
+    "holdingTime": "ANALYSE IMMEDIATELY — sulfite oxidises within minutes of air exposure",
+    "equipment": [
+      "Hach digital titrator or burette",
+      "Sample flask",
+      "Sample cooler with a delivery tube long enough to reach the bottom of the flask"
     ],
-    "safetyNotes": [],
+    "reagents": [
+      "Standard titrant per the kit (e.g. potassium iodate-iodide)",
+      "Starch indicator",
+      "Sulfuric acid solution (sample acidification)"
+    ],
+    "interferences": [
+      "AIR EXPOSURE is the dominant error — every second of contact with air lowers the result. This is the single biggest cause of falsely low sulfite readings.",
+      "Other reducing agents in the boiler water can titrate along with sulfite.",
+      "A hot sample loses sulfite faster; cool the sample before collection."
+    ],
+    "steps": [
+      "Cool the sample through the sample cooler to below about 40 °C before collecting.",
+      "Collect the sample with the delivery tube reaching the BOTTOM of the flask, and let the flask overflow several volumes. This displaces air rather than mixing it in.",
+      "Cap or cover the sample and take it straight to the bench — analyse within seconds to minutes, not later.",
+      "Measure the sample volume specified by your kit into the titration flask, again minimising splashing and agitation.",
+      "Acidify the sample as directed by the method.",
+      "Add starch indicator.",
+      "Titrate with the standard titrant, swirling gently, to the first permanent blue-black colour that persists for about 30 seconds.",
+      "Record the titrant volume and convert to mg/L sulfite per your kit's conversion factor.",
+      "Compare to the target residual band for your programme and boiler pressure.",
+      "If the residual is off target, use the Sulfite Residual Dosing calculator with feedwater flow to determine the feed adjustment in kg/day.",
+      "Log the residual, the feedwater dissolved oxygen if available, and any feed change in the Logbook."
+    ],
+    "qualityControl": [
+      "Run duplicates back-to-back, since the analyte decays with time.",
+      "Verify the titrant against a standard on the QA schedule.",
+      "If a result is unexpectedly low, ALWAYS repeat with careful air-free sampling before adjusting chemical feed — a sampling artefact and a genuine loss of residual look identical on the bench sheet."
+    ],
+    "troubleshooting": [
+      "Consistently low or zero residual: air exposure during sampling is far more likely than genuine total depletion. Re-sample with the tube at the flask bottom and overflow generously.",
+      "Endpoint colour fades quickly: titrate slightly further and confirm the colour holds for 30 seconds.",
+      "Residual high but dissolved oxygen also high: the scavenger may not be reacting — check feed point location and water temperature at the point of injection."
+    ],
+    "safetyNotes": [
+      "Cool samples fully — see the boiler sampling procedure for scalding precautions.",
+      "Sulfuric acid is corrosive; wear gloves and eye protection.",
+      "Boiler water is highly alkaline and causes burns."
+    ],
     "calcRef": "boiler-sulfite-dose"
   },
   {
     "id": "boiler-feedwater-condensate-sampling",
     "domain": "boiler",
     "title": "Feedwater and Condensate Sampling",
-    "methodRef": "Standard site sampling practice",
-    "aliases": ["feedwater sample", "condensate sample"],
-    "equipment": ["Sample cooler", "Sample bottles"],
-    "reagents": [],
-    "steps": [
-      "Sample from designated feedwater and condensate return taps after adequate line flushing.",
-      "Allow samples to cool to a safe handling/testing temperature before analysis.",
-      "Test for the parameters required by the water treatment program (e.g. hardness, pH, conductivity, dissolved oxygen as applicable).",
-      "Use the Condensate Return % calculator with measured condensate and feedwater flows to track return percentage.",
-      "Log results and flag any out-of-range readings for follow-up."
+    "methodRef": "Standard cycle chemistry sampling practice",
+    "aliases": ["feedwater sample", "condensate sample", "cycle sampling", "condensate return"],
+    "frequency": "Per shift on all monitored cycle sample points",
+    "holdingTime": "Analyse immediately — high-purity samples change rapidly on exposure to air",
+    "equipment": [
+      "Sample coolers with confirmed cooling water flow",
+      "Flow-through sample panel",
+      "Clean, dedicated sample bottles (plastic for silica, acid-washed for metals)",
+      "Conductivity, cation conductivity, and pH instruments",
+      "Dissolved oxygen meter"
     ],
-    "safetyNotes": ["Condensate lines may be hot/pressurized — use proper PPE."],
+    "reagents": [],
+    "interferences": [
+      "CO2 and oxygen pick-up from air changes conductivity, pH, and dissolved oxygen within seconds — high-purity sampling must be done from a continuously flowing line.",
+      "Insufficient line flushing gives the previous condition rather than the current one.",
+      "Shared or improperly cleaned bottles cross-contaminate trace analyses."
+    ],
+    "steps": [
+      "Confirm cooling water is flowing to every sample cooler being used before opening any sample valve.",
+      "Establish a continuous flow at the sample panel and let each line flush thoroughly — high-purity lines need generous flushing to reach true composition.",
+      "Verify the sample temperature at the panel is stable and safe to handle.",
+      "Take on-line readings first where fitted: specific conductivity, cation conductivity, pH, and dissolved oxygen. These are the most reliable because the sample never contacts air.",
+      "For any grab sample, fill the bottle completely with no headspace, overflowing several volumes, and cap immediately.",
+      "Use the correct bottle for each analysis: plastic for silica, acid-washed for iron and copper, and dedicated bottles for trace work.",
+      "Run time-sensitive tests first — dissolved oxygen, hydrazine, and sulfite degrade fastest.",
+      "Calculate the feedwater pH from specific conductivity using the calculated pH tool, and compare it to the measured pH.",
+      "Record the condensate and feedwater flows and use the Condensate Return % calculator to track the return fraction. A falling return percentage means more raw makeup entering the cycle, which brings more contamination and more chemical demand.",
+      "Cross-check the whole picture before concluding: conductivity, cation conductivity, pH, oxygen, iron, and copper together tell a consistent story; any single reading out of line with the rest is usually an instrument or sampling problem.",
+      "Log every parameter, the sample point, and the time in the Logbook. Consistent sample timing is what makes the trend usable."
+    ],
+    "qualityControl": [
+      "Verify all meters against standards at the start of the shift.",
+      "Confirm sample line flows are within the panel's design range — too low a flow gives unrepresentative samples.",
+      "Track cation conductivity as the primary contamination indicator on every sample.",
+      "Repeat any out-of-limit result on a fresh sample before declaring a chemistry excursion."
+    ],
+    "troubleshooting": [
+      "All parameters drift together across the shift: suspect the sample panel (flow, cooler fouling) before suspecting the plant.",
+      "Dissolved oxygen high on a deaerated system: usually air in-leakage at the sampling system rather than in the cycle — check sample line fittings first.",
+      "Conductivity higher on grab samples than on-line: CO2 absorption during sampling. Trust the on-line reading.",
+      "Condensate return percentage dropping: check for a condensate dump to drain, or a steam trap/leak losing condensate."
+    ],
+    "safetyNotes": [
+      "SCALDING HAZARD — never open a sample valve without confirmed cooling water flow.",
+      "Open valves slowly and stand clear of the discharge path.",
+      "Cycle samples may contain hydrazine or ammonia — follow the relevant chemical handling precautions."
+    ],
     "calcRef": "boiler-condensate-return"
   },
   {
@@ -112,17 +591,50 @@
     "domain": "boiler",
     "title": "Conductivity Measurement",
     "methodRef": "Standard Methods 2510B",
-    "aliases": ["conductivity", "specific conductance"],
-    "equipment": ["Conductivity meter and probe", "Calibration standard solution"],
-    "reagents": ["Conductivity calibration standard"],
-    "steps": [
-      "Calibrate the meter against a known standard solution; recalibrate if drift is out of tolerance.",
-      "Rinse the probe with distilled water, then with a small volume of the sample.",
-      "Immerse the probe in the sample and allow the reading to stabilize.",
-      "Record conductivity (µS/cm) and sample temperature.",
-      "Use the Boiler Water TDS from Conductivity calculator if an estimated TDS is needed."
+    "aliases": ["conductivity", "specific conductance", "cation conductivity", "acid conductivity"],
+    "frequency": "Per shift on all monitored points; continuous on-line where fitted",
+    "holdingTime": "Measure on-line or immediately; high-purity samples change within seconds of air exposure",
+    "equipment": [
+      "Conductivity meter with automatic temperature compensation",
+      "Conductivity cell matched to the range being measured (low-range cell for high-purity water)",
+      "Cation exchange column (for cation/acid conductivity)",
+      "Flow-through cell for high-purity samples"
     ],
-    "safetyNotes": [],
+    "reagents": ["Conductivity calibration standards appropriate to the range (e.g. 1413 µS/cm for general use, low-range standards for high-purity work)"],
+    "interferences": [
+      "Temperature has a large effect (roughly 2 % per °C) — automatic temperature compensation to 25 °C is essential, and its reference must be set correctly.",
+      "High-purity water absorbs CO2 from air almost instantly, raising conductivity. Static grab samples of condensate or demineralised water cannot be measured accurately.",
+      "A fouled or damaged cell reads low and responds slowly.",
+      "Using a general-purpose cell on high-purity water gives poor resolution at the low end."
+    ],
+    "steps": [
+      "Select a cell with a cell constant appropriate to the expected range — do not use a high-range cell for high-purity water.",
+      "Calibrate or verify against a standard solution close to the expected sample conductivity. Record the result.",
+      "Confirm automatic temperature compensation is enabled and referenced to 25 °C.",
+      "For high-purity samples, use a flow-through cell on a continuously flowing line. Do not attempt a static beaker measurement.",
+      "For general samples, rinse the probe with deionised water, then with sample, and immerse fully with no bubbles trapped in the cell.",
+      "Allow the reading to stabilise completely before recording.",
+      "Record specific conductivity in µS/cm together with the sample temperature.",
+      "CATION (ACID) CONDUCTIVITY: pass the sample through the hydrogen-form cation exchange column and measure the effluent conductivity. This removes the alkalising agent and leaves contaminant anions, making it the sensitive indicator of ingress.",
+      "Use the Boiler Water TDS from Conductivity calculator where an estimated TDS is required, and the pH from Specific Conductivity calculator for high-purity cycle water.",
+      "Log specific conductivity, cation conductivity, and temperature for each point in the Logbook."
+    ],
+    "qualityControl": [
+      "Verify calibration daily against a standard in the relevant range.",
+      "Track the cell constant over time; a drifting constant means the cell needs cleaning or replacement.",
+      "Replace or regenerate cation column resin on schedule — an exhausted column hides contamination by reading falsely low.",
+      "Compare on-line and bench readings periodically to confirm both are trustworthy."
+    ],
+    "troubleshooting": [
+      "Reading low and slow to respond: fouled cell or trapped bubbles — clean the cell and re-immerse.",
+      "High-purity reading much higher than expected: CO2 absorption from a static or poorly flushed sample. Use a flowing sample.",
+      "Reading below 0.055 µS/cm: physically impossible for water at 25 °C — the meter or its compensation is faulty.",
+      "On-line and bench readings disagree: check both calibrations and confirm the bench sample was taken from a flowing line."
+    ],
+    "safetyNotes": [
+      "Confirm sample coolers are in service before drawing hot samples.",
+      "Calibration standards should be poured into a beaker for use and never returned to the stock bottle."
+    ],
     "calcRef": "boiler-tds-conductivity"
   }
 ]
