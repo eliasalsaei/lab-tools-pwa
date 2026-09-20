@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'labtools-v2';
+const CACHE_VERSION = 'labtools-v3';
 
 const PRECACHE_URLS = [
   './',
@@ -41,6 +41,10 @@ const PRECACHE_URLS = [
   './js/notes/notes.js',
   './js/notes/notes-ui.js',
   './js/settings/settings-ui.js',
+  './js/shifts/shift-engine.js',
+  './js/shifts/shifts-store.js',
+  './js/shifts/ics.js',
+  './js/shifts/shifts-ui.js',
   './data/procedures/water.json',
   './data/procedures/boiler.json',
   './data/procedures/wastewater.json',

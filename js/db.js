@@ -1,5 +1,5 @@
 const DB_NAME = 'labToolsDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise = null;
 
@@ -32,6 +32,20 @@ function openDb() {
 
       if (!db.objectStoreNames.contains('settings')) {
         db.createObjectStore('settings', { keyPath: 'key' });
+      }
+
+      if (!db.objectStoreNames.contains('shiftConfig')) {
+        db.createObjectStore('shiftConfig', { keyPath: 'key' });
+      }
+
+      if (!db.objectStoreNames.contains('shiftOverrides')) {
+        const store = db.createObjectStore('shiftOverrides', { keyPath: 'date' });
+        store.createIndex('code', 'code', { unique: false });
+      }
+
+      if (!db.objectStoreNames.contains('shiftExports')) {
+        const store = db.createObjectStore('shiftExports', { keyPath: 'uid' });
+        store.createIndex('date', 'date', { unique: false });
       }
     };
 
@@ -86,7 +100,7 @@ export const db = {
   },
 
   async exportAll() {
-    const stores = ['logEntries', 'calcHistory', 'calcPresets', 'settings'];
+    const stores = ['logEntries', 'calcHistory', 'calcPresets', 'settings', 'shiftConfig', 'shiftOverrides', 'shiftExports'];
     const data = {};
     for (const s of stores) {
       data[s] = await this.getAll(s);
@@ -95,7 +109,7 @@ export const db = {
   },
 
   async importAll(payload, { replace = false } = {}) {
-    const stores = ['logEntries', 'calcHistory', 'calcPresets', 'settings'];
+    const stores = ['logEntries', 'calcHistory', 'calcPresets', 'settings', 'shiftConfig', 'shiftOverrides', 'shiftExports'];
     for (const s of stores) {
       if (!payload.data || !Array.isArray(payload.data[s])) continue;
       if (replace) await this.clear(s);

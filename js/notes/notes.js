@@ -20,7 +20,7 @@ export async function getEntry(id) {
   return db.get('logEntries', id);
 }
 
-export async function createEntry({ title, body, tags, category, status, date }) {
+export async function createEntry({ title, body, tags, category, status, date, shift }) {
   const now = Date.now();
   const entry = {
     id: uuid(),
@@ -32,6 +32,8 @@ export async function createEntry({ title, body, tags, category, status, date })
     tags: tags || [],
     category: category || 'general',
     status: status || 'open',
+    // Which shift was running when this was written, for later reference.
+    shift: shift || null,
     edits: [],
   };
   await db.put('logEntries', entry);

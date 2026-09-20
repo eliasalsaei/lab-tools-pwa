@@ -4,16 +4,21 @@ import { renderLogList, renderNewEntry, renderEditEntry } from './notes/notes-ui
 import { renderCalculatorsHome, renderDomainList, renderCalculatorDetail } from './calculators/calculator-shell.js';
 import { renderProceduresList, renderProcedureDetail } from './procedures/procedures-viewer.js';
 import { renderSettings } from './settings/settings-ui.js';
+import { renderShifts, renderShiftSetup, renderShiftExport, nextShiftCardHtml } from './shifts/shifts-ui.js';
 import { listEntries } from './notes/notes.js';
 import { DOMAINS, calculatorsByDomain } from './calculators/registry.js';
 
 async function renderHome() {
   const entries = (await listEntries()).slice(0, 3);
+  const shiftCard = await nextShiftCardHtml();
   return `
+    ${shiftCard ? `<div class="section-title">Your Shift</div>${shiftCard}` : ''}
+
     <div class="section-title">Quick Links</div>
     <div class="grid-2">
       <a class="card card-link" href="#/log/new"><h3>+ New Log Entry</h3><p>Record today's activity</p></a>
       <a class="card card-link" href="#/calculators"><h3>Calculators</h3><p>${DOMAINS.reduce((n, d) => n + calculatorsByDomain(d.id).length, 0)} tools</p></a>
+      ${shiftCard ? '' : '<a class="card card-link" href="#/shifts"><h3>Shift Rotation</h3><p>Set up your roster</p></a>'}
     </div>
 
     <div class="section-title">Recent Log Entries</div>
@@ -100,6 +105,9 @@ function initRoutes() {
   registerRoute('/log', renderLogList);
   registerRoute('/log/new', renderNewEntry);
   registerRoute('/log/:id', renderEditEntry);
+  registerRoute('/shifts', renderShifts);
+  registerRoute('/shifts/setup', renderShiftSetup);
+  registerRoute('/shifts/export', renderShiftExport);
   registerRoute('/settings', renderSettings);
   setNotFound(() => '<div class="empty-state">Page not found.</div>');
   initRouter(qs('#view'));
