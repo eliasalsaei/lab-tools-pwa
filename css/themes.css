@@ -52,3 +52,51 @@
   --accent-soft: #ffd40033;
   --accent-contrast: #000000;
 }
+
+/* Shift colours, defined per theme so the month grid stays legible in all
+   three. Morning reads warm, night reads cool, at a glance. */
+:root {
+  --shift-m: #b45309;
+  --shift-m-bg: #f59e0b1f;
+  --shift-n: #4338ca;
+  --shift-n-bg: #6366f11f;
+  --shift-l: #047857;
+  --shift-l-bg: #10b9811f;
+  --shift-t: #0369a1;
+  --shift-t-bg: #0ea5e91f;
+}
+
+:root[data-theme="dark"] {
+  --shift-m: #fbbf24;
+  --shift-m-bg: #f59e0b26;
+  --shift-n: #a5b4fc;
+  --shift-n-bg: #6366f133;
+  --shift-l: #6ee7b7;
+  --shift-l-bg: #10b98126;
+  --shift-t: #7dd3fc;
+  --shift-t-bg: #0ea5e926;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --shift-m: #fbbf24;
+    --shift-m-bg: #f59e0b26;
+    --shift-n: #a5b4fc;
+    --shift-n-bg: #6366f133;
+    --shift-l: #6ee7b7;
+    --shift-l-bg: #10b98126;
+    --shift-t: #7dd3fc;
+    --shift-t-bg: #0ea5e926;
+  }
+}
+
+:root[data-theme="contrast"] {
+  --shift-m: #ffd400;
+  --shift-m-bg: #000000;
+  --shift-n: #66d9ff;
+  --shift-n-bg: #000000;
+  --shift-l: #7cfc9b;
+  --shift-l-bg: #000000;
+  --shift-t: #ff9ecb;
+  --shift-t-bg: #000000;
+}

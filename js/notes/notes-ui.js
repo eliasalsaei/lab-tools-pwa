@@ -4,6 +4,32 @@ import {
   CATEGORIES, STATUSES, parseTags, listEntries, getEntry,
   createEntry, updateEntry, deleteEntry, searchEntries, filterByCategory,
 } from './notes.js';
+import { getConfig, getOverrideMap } from '../shifts/shifts-store.js';
+import { shiftFor, shiftAtInstant } from '../shifts/shift-engine.js';
+
+// Works out which shift a log entry belongs to. For a new entry that means the
+// shift actually running right now - a note typed at 02:00 belongs to the night
+// shift that started the previous evening, not to the new calendar day.
+async function resolveShift(dateIso, { useClock = false } = {}) {
+  const config = await getConfig();
+  if (!config.configured) return null;
+  const overrides = await getOverrideMap();
+
+  if (useClock) {
+    const live = shiftAtInstant(new Date(), config, overrides);
+    if (live) return { code: live.code, date: live.date, label: live.type.label };
+  }
+
+  const shift = shiftFor(dateIso, config, overrides);
+  return { code: shift.code, date: shift.date, label: shift.type.label };
+}
+
+function shiftTagHtml(shift) {
+  if (!shift) return '';
+  const started = shift.date && shift.date !== '' ? ` (started ${formatDate(shift.date)})` : '';
+  const detail = shift.code === 'N' ? started : '';
+  return `<span class="shift-tag is-${String(shift.code).toLowerCase()}">${escapeHtml(shift.label)}${escapeHtml(detail)}</span>`;
+}
 
 let listState = { query: '', category: '' };
 
@@ -31,7 +57,7 @@ export async function renderLogList() {
       ${entries.length === 0 ? '<div class="empty-state">No log entries yet.</div>' : entries.map((e) => `
         <a class="card card-link" href="#/log/${e.id}">
           <div class="log-entry-meta">
-            <span>${formatDate(e.date)} &middot; ${escapeHtml(e.category)}</span>
+            <span>${formatDate(e.date)} &middot; ${escapeHtml(e.category)}${e.shift ? ` &middot; ${escapeHtml(e.shift.label)}` : ''}</span>
             ${statusPill(e.status)}
           </div>
           <h3>${escapeHtml(e.title) || '(untitled)'}</h3>
@@ -57,7 +83,7 @@ export async function renderLogList() {
   qs('#new-entry-btn', view).addEventListener('click', () => navigate('/log/new'));
 }
 
-function entryForm(entry) {
+function entryForm(entry, shift) {
   const isNew = !entry;
   const title = isNew ? '' : entry.title;
   const body = isNew ? '' : entry.body;
@@ -78,6 +104,12 @@ function entryForm(entry) {
         <label for="f-date">Date</label>
         <input id="f-date" type="date" value="${escapeHtml(date)}" />
       </div>
+      ${shift ? `
+        <div class="field">
+          <label>Shift</label>
+          <div class="shift-context" id="shift-context">${shiftTagHtml(shift)}</div>
+        </div>
+      ` : ''}
       <div class="grid-2">
         <div class="field">
           <label for="f-category">Category</label>
@@ -119,8 +151,9 @@ function entryForm(entry) {
 
 export async function renderNewEntry() {
   const view = getView();
-  view.innerHTML = entryForm(null);
-  bindForm(null);
+  const shift = await resolveShift(todayIso(), { useClock: true });
+  view.innerHTML = entryForm(null, shift);
+  bindForm(null, shift);
 }
 
 export async function renderEditEntry({ id }) {
@@ -130,13 +163,25 @@ export async function renderEditEntry({ id }) {
     view.innerHTML = '<div class="empty-state">Entry not found.</div><a class="back-link" href="#/log">&larr; Back to Logbook</a>';
     return;
   }
-  view.innerHTML = entryForm(entry);
-  bindForm(entry);
+  const shift = entry.shift || await resolveShift(entry.date);
+  view.innerHTML = entryForm(entry, shift);
+  bindForm(entry, shift);
 }
 
-function bindForm(existingEntry) {
+function bindForm(existingEntry, initialShift) {
   const view = getView();
   const form = qs('#entry-form', view);
+  let shift = initialShift;
+
+  // Changing the date re-points the entry at that day's shift.
+  const shiftBox = qs('#shift-context', form);
+  if (shiftBox) {
+    qs('#f-date', form).addEventListener('change', async (ev) => {
+      if (!ev.target.value) return;
+      shift = await resolveShift(ev.target.value);
+      shiftBox.innerHTML = shiftTagHtml(shift);
+    });
+  }
 
   form.addEventListener('submit', async (ev) => {
     ev.preventDefault();
@@ -148,15 +193,15 @@ function bindForm(existingEntry) {
     const bodyInput = qs('#f-body', form).value;
 
     if (!existingEntry) {
-      await createEntry({ title, body: bodyInput, tags, category, status, date });
+      await createEntry({ title, body: bodyInput, tags, category, status, date, shift });
       navigate('/log');
       return;
     }
 
     if (existingEntry.status === 'ongoing' && bodyInput.trim()) {
-      await updateEntry(existingEntry.id, { title, date, category, status }, { appendEdit: bodyInput.trim() });
+      await updateEntry(existingEntry.id, { title, date, category, status, shift }, { appendEdit: bodyInput.trim() });
     } else {
-      await updateEntry(existingEntry.id, { title, date, category, status, body: bodyInput });
+      await updateEntry(existingEntry.id, { title, date, category, status, body: bodyInput, shift });
     }
     navigate('/log');
   });
