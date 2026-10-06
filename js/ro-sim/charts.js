@@ -66,10 +66,22 @@ function axes(svg, { width, height, m, yTicks, yScale, yUnit }) {
   svg.append(u);
 }
 
-// data: [{label, value}], opts: {unit, digits, xTitle}
+// data: [{label, value, series?}], opts: {unit, digits, xTitle, legend: [{label, series}]}
 export function barChart(container, data, opts = {}) {
   const height = 220;
   const { svg, tip, width } = frame(container, height);
+  if (opts.legend) {
+    const lg = document.createElement('div');
+    lg.className = 'ro-legend';
+    for (const item of opts.legend) {
+      const span = document.createElement('span');
+      const key = document.createElement('i');
+      key.className = `ro-key ro-key-s${item.series}`;
+      span.append(key, document.createTextNode(item.label));
+      lg.append(span);
+    }
+    container.prepend(lg);
+  }
   svg.setAttribute('aria-label', opts.ariaLabel || 'Bar chart');
   const m = { l: 48, r: 10, t: 26, b: 38 };
   const vals = data.map((d) => d.value);
@@ -89,7 +101,7 @@ export function barChart(container, data, opts = {}) {
     // Rounded at the data end, square at the baseline.
     const x = cx - bw / 2;
     const path = `M${x},${base} L${x},${top + r} Q${x},${top} ${x + r},${top} L${x + bw - r},${top} Q${x + bw},${top} ${x + bw},${top + r} L${x + bw},${base} Z`;
-    const bar = svgEl('path', { d: path, class: 'ro-bar' });
+    const bar = svgEl('path', { d: path, class: `ro-bar ro-bar-s${d.series || 1}` });
     svg.append(bar);
     const lbl = svgEl('text', { x: cx, y: height - m.b + 16, 'text-anchor': 'middle', class: 'ro-axis' });
     lbl.textContent = d.label;

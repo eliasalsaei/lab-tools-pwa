@@ -12,7 +12,26 @@ const K_DP = 0.0065;          // element pressure-drop coefficient: ΔP = K·Qav
 const K_MT_REF = 430;         // mass-transfer coefficient (LMH) at reference crossflow
 const Q_MT_REF = 12.8;        // reference average feed-channel flow (m³/h)
 const CL_FRACTION = 0.553;    // chloride share of seawater TDS
-const TDS_PER_US = 0.5;       // mg/L per µS/cm for dilute NaCl permeate
+const PLP = 2;                // pretreatment / LP feed pump discharge, bar
+
+// TDS (mg/L) per µS/cm rises from ~0.5 for dilute NaCl permeate to ~0.70 for
+// seawater and ~0.75 for brine. Smooth fit so both directions round-trip.
+export function tdsFactor(tds) {
+  return Math.min(0.5 + 0.2 * Math.sqrt(Math.max(tds, 0) / 35000), 0.75);
+}
+
+export function tdsToEc(tds) {
+  return tds / tdsFactor(tds);
+}
+
+export function ecToTds(ec) {
+  let lo = 0, hi = ec;  // factor ≤ 1, so TDS ≤ EC
+  for (let i = 0; i < 50; i++) {
+    const mid = (lo + hi) / 2;
+    if (tdsToEc(mid) < ec) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
 
 // Osmotic pressure (bar) ≈ 0.79 bar per 1000 mg/L at 25 °C, van 't Hoff in T.
 export function osmotic(tds, temp) {
@@ -83,9 +102,13 @@ function solveVessel(feed, n, area, perm) {
   const elements = [];
   for (let e = 0; e < n; e++) {
     const inlet = s;
+    // Split-permeate vessels: elements before the plug drain to the front
+    // permeate port, the rest to the rear port, each with its own back-pressure.
+    const front = e < perm.split;
+    const permE = front ? { ...perm, Pp: perm.PpFront } : perm;
     let Qp = 0, salt = 0, boron = 0, betaMax = 0, ndpSum = 0;
     for (let k = 0; k < SEGMENTS; k++) {
-      const seg = solveSegment(s, area / SEGMENTS, perm);
+      const seg = solveSegment(s, area / SEGMENTS, permE);
       Qp += seg.Qp;
       salt += seg.Qp * seg.Cp;
       boron += seg.Qp * seg.CpB;
@@ -93,15 +116,19 @@ function solveVessel(feed, n, area, perm) {
       ndpSum += seg.ndp;
       s = seg.out;
     }
+    const permTds = Qp > 0 ? salt / Qp : 0;
     elements.push({
       index: e + 1,
+      port: front ? 'front' : 'rear',
+      permEc: tdsToEc(permTds),
+      feedEc: tdsToEc(inlet.C),
       feedFlow: inlet.Qf,
       feedTds: inlet.C,
       feedPressure: inlet.P,
       concFlow: s.Qf,
       concTds: s.C,
       permFlow: Qp,
-      permTds: Qp > 0 ? salt / Qp : 0,
+      permTds,
       permBoron: Qp > 0 ? boron / Qp : 0,
       flux: Qp * 1000 / area,
       recovery: Qp / inlet.Qf,
@@ -126,7 +153,7 @@ export function calibrate(membrane) {
   const targetCpB = TEST.boron * (1 - membrane.boronRej / 100);
   let A = 1.2, B = 0.05, Bb = 1;
   for (let i = 0; i < 40; i++) {
-    const perm = { A, B, Bb, T: TEST.temp, Pp: 0, dpFactor: 1 };
+    const perm = { A, B, Bb, T: TEST.temp, Pp: 0, PpFront: 0, split: 0, dpFactor: 1 };
     const v = solveVessel({ Qf, C: TEST.tds, Cb: TEST.boron, P: TEST.pressure }, 1, membrane.area, perm);
     const el = v.elements[0];
     A *= Qp / el.permFlow;
@@ -138,42 +165,58 @@ export function calibrate(membrane) {
   return result;
 }
 
-// Fill in derived quantities for a train and energy balance.
-function summarise(inp, membrane, vessel, feedPerVessel) {
-  const nv = inp.vessels;
-  const els = vessel.elements;
-  const qpVessel = els.reduce((s, e) => s + e.permFlow, 0);
-  const salt = els.reduce((s, e) => s + e.permFlow * e.permTds, 0);
-  const boron = els.reduce((s, e) => s + e.permFlow * e.permBoron, 0);
-  const Qp = qpVessel * nv;          // m³/h
-  const Qf = feedPerVessel * nv;
-  const Qc = vessel.out.Qf * nv;
-  const permTds = salt / qpVessel;
-  const permBoron = boron / qpVessel;
-  const Pf = inp._feedPressure;
-  const Pc = vessel.out.P;
-  const Plp = 2; // pretreatment / LP feed pump discharge, bar
+// Blend a list of elements into one permeate stream (per vessel, m³/h).
+function blend(els) {
+  const q = els.reduce((s, e) => s + e.permFlow, 0);
+  if (q <= 0) return { flow: 0, tds: 0, boron: 0, ec: 0 };
+  const tds = els.reduce((s, e) => s + e.permFlow * e.permTds, 0) / q;
+  const boron = els.reduce((s, e) => s + e.permFlow * e.permBoron, 0) / q;
+  return { flow: q, tds, boron, ec: tdsToEc(tds) };
+}
 
+// Energy balance of the high-pressure loop. Flows m³/h, pressures bar.
+function energy(inp, Qf, Qp, Qc, Pf, Pc) {
   const etaHp = inp.pumpEff / 100;
   const etaB = 0.8;
   const etaErd = inp.erdEff / 100;
-  let hpKw, boosterKw = 0, recoveredKw = 0;
+  const e = { hpFlow: Qf, hpDp: Pf - PLP, boosterFlow: 0, boosterDp: 0, erdFlow: 0, erdOut: 0, leakFlow: 0, boosterKw: 0, recoveredKw: 0 };
   if (inp.erd === 'isobaric') {
-    // PX-type exchanger: HP pump carries only the permeate-equivalent flow,
-    // the ERD pressurises the rest, a booster tops it up.
-    hpKw = Qp * (Pf - Plp) / 36 / etaHp;
-    const pxOut = Plp + etaErd * (Pc - Plp);
-    boosterKw = Qc * Math.max(Pf - pxOut, 0) / 36 / etaB;
-    recoveredKw = Qc * (pxOut - Plp) / 36;
+    // Pressure exchanger: brine pressurises an equal volume of seawater, a
+    // booster tops it up to feed pressure. Lubrication flow leaks from the
+    // HP side, so the HP pump makes up permeate + leakage.
+    const L = Qc * inp.erdLeak / 100;
+    e.leakFlow = L;
+    e.erdFlow = Qc - L;
+    e.erdOut = PLP + etaErd * (Pc - PLP);
+    e.hpFlow = Qp + L;
+    e.boosterFlow = Qc - L;
+    e.boosterDp = Math.max(Pf - e.erdOut, 0);
+    e.boosterKw = e.boosterFlow * e.boosterDp / 36 / etaB;
+    e.recoveredKw = e.erdFlow * (e.erdOut - PLP) / 36;
   } else if (inp.erd === 'turbine') {
-    hpKw = Qf * (Pf - Plp) / 36 / etaHp;
-    recoveredKw = Qc * Pc / 36 * etaErd;
-    hpKw -= recoveredKw;
-  } else {
-    hpKw = Qf * (Pf - Plp) / 36 / etaHp;
+    e.erdFlow = Qc;
+    e.recoveredKw = Qc * Pc / 36 * etaErd;
   }
-  const lpKw = Qf * Plp / 36 / 0.75;
-  const totalKw = hpKw + boosterKw + lpKw;
+  e.hpKw = e.hpFlow * e.hpDp / 36 / etaHp - (inp.erd === 'turbine' ? e.recoveredKw : 0);
+  e.lpKw = Qf * PLP / 36 / 0.75;
+  e.totalKw = e.hpKw + e.boosterKw + e.lpKw;
+  // Same plant with the brine simply throttled, for comparison.
+  e.noErdKw = Qf * (Pf - PLP) / 36 / etaHp + e.lpKw;
+  return e;
+}
+
+function summarise(inp, membrane, vessel, feedPerVessel, membraneFeed) {
+  const nv = inp.vessels;
+  const els = vessel.elements;
+  const all = blend(els);
+  const front = blend(els.filter((e) => e.port === 'front'));
+  const rear = blend(els.filter((e) => e.port === 'rear'));
+  const Qp = all.flow * nv;          // m³/h
+  const Qf = feedPerVessel * nv;
+  const Qc = vessel.out.Qf * nv;
+  const Pf = inp._feedPressure;
+  const Pc = vessel.out.P;
+  const en = energy(inp, Qf, Qp, Qc, Pf, Pc);
 
   const totalArea = membrane.area * inp.elements * nv;
   const avgFlux = Qp * 1000 / totalArea;
@@ -191,6 +234,9 @@ function summarise(inp, membrane, vessel, feedPerVessel) {
   if (maxBeta > 1.2) warnings.push(`Concentration polarisation factor reaches ${maxBeta.toFixed(2)} (guideline ≤ 1.2).`);
   if (last.ndp < 3) warnings.push(`Net driving pressure at the tail element is only ${last.ndp.toFixed(1)} bar — the last elements barely produce water.`);
   if (vessel.out.C > 75000) warnings.push(`Concentrate TDS ${Math.round(vessel.out.C)} mg/L is very high — check CaCO₃/CaSO₄ scaling and antiscalant limits.`);
+  if (inp.split > 0 && front.flow <= 0) warnings.push('Front permeate back-pressure is so high that the front elements make no water.');
+  const permBackMax = inp.split > 0 ? Math.max(inp.permPressure, inp.frontPermPressure) : inp.permPressure;
+  if (permBackMax > 4.5) warnings.push(`Permeate back-pressure ${permBackMax.toFixed(1)} bar is close to the ~5 bar limit at which elements can be damaged on shutdown.`);
 
   return {
     feedPressure: Pf,
@@ -201,22 +247,41 @@ function summarise(inp, membrane, vessel, feedPerVessel) {
     concFlow: Qc * 24,
     feedPerVessel,
     recovery: Qp / Qf,
-    permTds,
-    permCl: permTds * CL_FRACTION,
-    permCond: permTds / TDS_PER_US,
-    permBoron,
-    rejection: 1 - permTds / inp.feedTds,
-    boronRejection: 1 - permBoron / inp.feedBoron,
+    permTds: all.tds,
+    permCl: all.tds * CL_FRACTION,
+    permCond: all.ec,
+    permBoron: all.boron,
+    split: inp.split > 0,
+    frontFlow: front.flow * nv * 24,
+    frontShare: front.flow / all.flow,
+    frontTds: front.tds,
+    frontCond: front.ec,
+    frontBoron: front.boron,
+    rearFlow: rear.flow * nv * 24,
+    rearShare: rear.flow / all.flow,
+    rearTds: rear.tds,
+    rearCond: rear.ec,
+    rearBoron: rear.boron,
+    rejection: 1 - all.tds / inp.feedTds,
+    boronRejection: 1 - all.boron / inp.feedBoron,
+    feedTds: inp.feedTds,
+    feedCond: tdsToEc(inp.feedTds),
+    membraneFeedTds: membraneFeed.C,
+    membraneFeedCond: tdsToEc(membraneFeed.C),
+    membraneFeedBoron: membraneFeed.Cb,
+    salinityIncrease: membraneFeed.C / inp.feedTds - 1,
     concTds: vessel.out.C,
+    concCond: tdsToEc(vessel.out.C),
     concOsmotic: osmotic(vessel.out.C, inp.temp),
-    feedOsmotic: osmotic(inp.feedTds, inp.temp),
+    feedOsmotic: osmotic(membraneFeed.C, inp.temp),
     avgFlux,
     leadFlux: lead.flux,
     tailFlux: last.flux,
     maxBeta,
     borateFraction: borateFraction(inp.ph, inp.feedTds, inp.temp),
-    hpKw, boosterKw, lpKw, recoveredKw, totalKw,
-    sec: totalKw / Qp,
+    ...en,
+    sec: en.totalKw / Qp,
+    secNoErd: en.noErdKw / Qp,
     elements: els,
     warnings,
     totalArea,
@@ -239,50 +304,76 @@ function permeabilities(inp, membrane) {
     Bb: (1 - fb) * BbAcid + fb * BbBorate,
     T,
     Pp: inp.permPressure,
+    PpFront: inp.frontPermPressure,
+    split: Math.min(inp.split || 0, inp.elements - 1),
     dpFactor: 1 + inp.fouling / 50,
   };
 }
 
-function runAtPressure(inp, membrane, perm, P, feedPerVessel) {
-  const v = solveVessel({ Qf: feedPerVessel, C: inp.feedTds, Cb: inp.feedBoron, P }, inp.elements, membrane.area, perm);
+function runAtPressure(inp, membrane, perm, P, feedPerVessel, feed) {
+  const v = solveVessel({ Qf: feedPerVessel, C: feed.C, Cb: feed.Cb, P }, inp.elements, membrane.area, perm);
   const qp = v.elements.reduce((s, e) => s + e.permFlow, 0);
   return { v, qp };
+}
+
+// Feed pressure that delivers qpTarget (per vessel), by bisection.
+function solvePressure(inp, membrane, perm, feedPerVessel, feed, qpTarget, lo, hi) {
+  let run = runAtPressure(inp, membrane, perm, hi, feedPerVessel, feed);
+  if (run.qp < qpTarget) return { P: hi, run, capped: true };
+  for (let i = 0; i < 40 && hi - lo > 0.005; i++) {
+    const P = (lo + hi) / 2;
+    const r = runAtPressure(inp, membrane, perm, P, feedPerVessel, feed);
+    if (r.qp > qpTarget) hi = P; else lo = P;
+  }
+  run = runAtPressure(inp, membrane, perm, hi, feedPerVessel, feed);
+  return { P: hi, run, capped: false };
 }
 
 // Main entry. mode 'pressure': feed pressure + feed flow are inputs.
 // mode 'flow': permeate flow + recovery are inputs; feed pressure is solved.
 export function simulate(input) {
-  const inp = { ...input };
+  const inp = { split: 0, frontPermPressure: 0, erdLeak: 0, erdMixing: 0, ...input };
   const membrane = getMembrane(inp.membrane);
   const perm = permeabilities(inp, membrane);
+  const P_MAX = 150;
 
-  let feedPerVessel, P, run;
-  if (inp.mode === 'flow') {
-    const qpTarget = inp.permTarget / 24 / inp.vessels;
-    feedPerVessel = qpTarget / (inp.recoveryTarget / 100);
-    let lo = osmotic(inp.feedTds, inp.temp) + inp.permPressure;
-    let hi = 150;
-    run = runAtPressure(inp, membrane, perm, hi, feedPerVessel);
-    if (run.qp < qpTarget) {
-      P = hi;
+  // An isobaric ERD mixes some brine into the seawater it pressurises, so the
+  // membranes see a saltier feed than the intake. That depends on the brine,
+  // which depends on the feed: iterate to a fixed point.
+  const raw = { C: inp.feedTds, Cb: inp.feedBoron };
+  let feed = { ...raw };
+  const mixing = inp.erd === 'isobaric' ? inp.erdMixing / 100 : 0;
+  const leak = inp.erd === 'isobaric' ? inp.erdLeak / 100 : 0;
+  const flowMode = inp.mode === 'flow';
+  const qpTarget = flowMode ? inp.permTarget / 24 / inp.vessels : 0;
+  const feedPerVessel = flowMode ? qpTarget / (inp.recoveryTarget / 100) : inp.feedFlow / 24 / inp.vessels;
+
+  let P = inp.feedPressure, run, capped = false;
+  for (let it = 0; it < (mixing > 0 ? 8 : 1); it++) {
+    if (flowMode) {
+      // Warm-start the bracket from the previous pass.
+      const lo = it ? P - 5 : osmotic(feed.C, inp.temp) + Math.min(inp.permPressure, inp.frontPermPressure);
+      const hi = it ? Math.min(P + 5, P_MAX) : P_MAX;
+      ({ P, run, capped } = solvePressure(inp, membrane, perm, feedPerVessel, feed, qpTarget, lo, hi));
     } else {
-      for (let i = 0; i < 40; i++) {
-        P = (lo + hi) / 2;
-        run = runAtPressure(inp, membrane, perm, P, feedPerVessel);
-        if (run.qp > qpTarget) hi = P; else lo = P;
-        if (hi - lo < 0.005) break;
-      }
-      P = hi;
-      run = runAtPressure(inp, membrane, perm, P, feedPerVessel);
+      run = runAtPressure(inp, membrane, perm, P, feedPerVessel, feed);
     }
-  } else {
-    feedPerVessel = inp.feedFlow / 24 / inp.vessels;
-    P = inp.feedPressure;
-    run = runAtPressure(inp, membrane, perm, P, feedPerVessel);
+    if (mixing <= 0) break;
+    const Qp = run.qp, Qc = run.v.out.Qf, L = leak * Qc;
+    const erdStream = Qc - L;
+    const mixC = raw.C + mixing * (run.v.out.C - raw.C);
+    const mixB = raw.Cb + mixing * (run.v.out.Cb - raw.Cb);
+    const next = {
+      C: ((Qp + L) * raw.C + erdStream * mixC) / feedPerVessel,
+      Cb: ((Qp + L) * raw.Cb + erdStream * mixB) / feedPerVessel,
+    };
+    const done = Math.abs(next.C - feed.C) < 0.5;
+    feed = next;
+    if (done) break;
   }
   inp._feedPressure = P;
-  const out = summarise(inp, membrane, run.v, feedPerVessel);
-  if (inp.mode === 'flow' && P >= 150) {
+  const out = summarise(inp, membrane, run.v, feedPerVessel, feed);
+  if (flowMode && capped) {
     out.warnings.unshift('Target cannot be reached even at 150 bar — reduce recovery or product flow, or add elements.');
   }
   out.membrane = membrane;
