@@ -27,6 +27,8 @@ const DEFAULTS = {
   feedPressure: 62,
   permPressure: 0.5,
   split: 0,
+  splitControl: 'pressure',
+  splitTarget: 60,
   frontPermPressure: 0.5,
   pumpEff: 82,
   erd: 'isobaric',
@@ -58,6 +60,7 @@ const NUMERIC = [
   { id: 'feedPressure', group: 'operation', label: 'Feed pressure', unit: 'bar', min: 35, max: 85, step: 0.5, digits: 1, modes: ['pressure'] },
   { id: 'feedFlow', group: 'operation', label: 'Feed flow', unit: 'm³/d', min: 2000, max: 90000, step: 250, digits: 0, modes: ['pressure'] },
   { id: 'split', group: 'permeate', label: 'Front permeate elements (0 = single permeate)', unit: '', min: 0, max: 7, step: 1, digits: 0 },
+  { id: 'splitTarget', group: 'permeate', label: 'Split ratio: front share of total permeate', unit: '%', min: 10, max: 90, step: 1, digits: 0, needsSplit: true, ratioOnly: true },
   { id: 'frontPermPressure', group: 'permeate', label: 'Front permeate back-pressure', unit: 'bar', min: 0, max: 5, step: 0.1, digits: 1, needsSplit: true },
   { id: 'permPressure', group: 'permeate', label: 'Rear / common permeate back-pressure', unit: 'bar', min: 0, max: 5, step: 0.1, digits: 1 },
   { id: 'pumpEff', group: 'energy', label: 'HP pump + motor efficiency', unit: '%', min: 60, max: 92, step: 1, digits: 0 },
@@ -72,11 +75,18 @@ function isVisible(n) {
   if (n.conc && n.conc !== state.concUnit) return false;
   if (n.erds && !n.erds.includes(state.erd)) return false;
   if (n.needsSplit && !(state.split > 0)) return false;
+  if (n.ratioOnly && state.splitControl !== 'ratio') return false;
   return true;
 }
 
 function refreshVisibility() {
   qsa('[data-wrap]').forEach((w) => { w.hidden = !isVisible(numeric(w.dataset.wrap)); });
+  const ctl = qs('#ro-split-control');
+  if (ctl) ctl.hidden = !(state.split > 0);
+  const ratio = state.splitControl === 'ratio';
+  const fl = qs('label[for="ro-frontPermPressure"]'), rl = qs('label[for="ro-permPressure"]');
+  if (fl) fl.textContent = ratio ? 'Front permeate back-pressure (minimum)' : 'Front permeate back-pressure';
+  if (rl) rl.textContent = ratio && state.split > 0 ? 'Rear permeate back-pressure (minimum)' : 'Rear / common permeate back-pressure';
 }
 
 // The TDS-based metric id, or its conductivity twin when showing conductivity.
@@ -108,6 +118,9 @@ const METRICS = [
   { id: 'membraneFeedCond', group: 'feed', label: 'Membrane feed conductivity (after ERD)', unit: 'µS/cm', digits: 0, better: 'lower' },
   { id: 'salinityIncrease', group: 'feed', label: 'Feed salinity increase from ERD', unit: '%', digits: 2, better: 'lower', scale: 100 },
   { id: 'frontFlow', group: 'split', label: 'Front permeate flow', unit: 'm³/d', digits: 0 },
+  { id: 'frontShare', group: 'split', label: 'Split ratio (front share)', unit: '%', digits: 1, scale: 100 },
+  { id: 'frontBackPressure', group: 'split', label: 'Front permeate back-pressure', unit: 'bar', digits: 2, better: 'lower' },
+  { id: 'rearBackPressure', group: 'split', label: 'Rear permeate back-pressure', unit: 'bar', digits: 2, better: 'lower' },
   { id: 'frontTds', group: 'split', label: 'Front permeate TDS', unit: 'mg/L', digits: 0, better: 'lower' },
   { id: 'frontCond', group: 'split', label: 'Front permeate conductivity', unit: 'µS/cm', digits: 0, better: 'lower' },
   { id: 'frontBoron', group: 'split', label: 'Front permeate boron', unit: 'mg/L', digits: 2, better: 'lower' },
@@ -143,6 +156,8 @@ const EXPLAIN = {
   feedEc: 'Conductivity is how most plants measure salinity online. Seawater TDS is about 0.70 × conductivity (54,000 µS/cm ≈ 38,000 mg/L). Higher conductivity means saltier feed: higher osmotic pressure, more pressure needed, and more salt passage.',
   concUnit: 'Conductivity and TDS describe the same salt. TDS (mg/L) is what the physics uses; conductivity (µS/cm) is what the online analysers read. The ratio is not constant: about 0.5 for dilute permeate, about 0.70 for seawater and about 0.75 for brine.',
   split: 'With a split-permeate vessel, a plug in the permeate tube separates the lead elements (front port) from the tail elements (rear port). The lead elements see the cleanest, lowest-osmotic feed and the highest driving pressure, so the front permeate is much cleaner. The rear permeate is saltier and higher in boron, and often goes to a second pass. Moving the plug back gives more front permeate, but it gets saltier.',
+  splitControl: 'In split-ratio control the operator sets the front share of the permeate and a control valve finds the back-pressure that gives it. A valve can only add back-pressure, so a lower front share is reached by throttling the front port, and a higher one by throttling the rear port.',
+  splitTarget: 'A smaller front share is reached by throttling the front port. The lead elements make less water but pass the same salt, so the front permeate gets saltier (less dilution). The rear permeate gets cleaner, because more of it now comes from the mid-vessel elements, and feed pressure rises to keep total production. A larger front share throttles the rear port instead: the front permeate gets cleaner and the small rear stream gets very salty. Large throttling needs back-pressures that real elements cannot take, so watch the warnings.',
   frontPermPressure: 'Raising the front permeate back-pressure throttles the lead elements. They make less water, so the tail elements must make more, which evens out the flux along the vessel and slows lead-element fouling. The cost: front permeate gets slightly saltier and the feed pressure must rise to keep production.',
   erdMixing: 'In a pressure exchanger, brine and seawater meet in the same rotor ducts, so a little brine mixes into the seawater it pressurises. The membranes then see a saltier feed. That raises the osmotic pressure, so more feed pressure is needed and permeate quality gets slightly worse. Plants limit this with overflush (sending a bit more LP seawater through the ERD).',
   erdLeak: 'Lubrication flow leaks from the high-pressure side of the ERD to the low-pressure brine outlet. The HP pump has to make up that lost flow, so leakage costs energy directly.',
@@ -272,7 +287,13 @@ function shell() {
     <details class="card ro-group" open>
       <summary>Permeate collection: front &amp; rear</summary>
       <p class="ro-note">Set how many lead elements drain to the front permeate port. The rest drain to the rear port.</p>
-      ${group('permeate')}
+      ${sliderHtml(numeric('split'))}
+      <div class="ro-unit-row" id="ro-split-control" role="group" aria-label="Split control" ${state.split > 0 ? '' : 'hidden'}>
+        <span>Control the split by</span>
+        <button type="button" class="chip ${state.splitControl === 'pressure' ? 'active' : ''}" data-split-control="pressure">Back-pressures</button>
+        <button type="button" class="chip ${state.splitControl === 'ratio' ? 'active' : ''}" data-split-control="ratio">Split ratio</button>
+      </div>
+      ${['splitTarget', 'frontPermPressure', 'permPressure'].map((id) => sliderHtml(numeric(id))).join('')}
       <div id="ro-ports"></div>
     </details>
 
@@ -429,10 +450,11 @@ function renderExplain(res) {
   const box = qs('#ro-explain');
   if (!lastChanged || !prevResult) { box.innerHTML = ''; return; }
   const label = numeric(lastChanged)?.label || {
-    membrane: 'Membrane type', erd: 'Energy-recovery device', source: 'Intake type', mode: 'Operating mode', concUnit: 'Concentration units',
+    membrane: 'Membrane type', erd: 'Energy-recovery device', source: 'Intake type', mode: 'Operating mode', concUnit: 'Concentration units', splitControl: 'Split control',
   }[lastChanged] || lastChanged;
   const ids = [cu('permTds'), 'permBoron', 'permFlow', 'recovery', 'feedPressure', 'sec'];
-  if (res.split && prevResult.split) ids.push('frontFlow', cu('frontTds'), cu('rearTds'));
+  if (res.split && prevResult.split) ids.push('frontShare', cu('frontTds'), cu('rearTds'));
+  if (res.splitControl === 'ratio' && prevResult.splitControl === 'ratio') ids.push('frontBackPressure', 'rearBackPressure');
   if (state.erd === 'isobaric') ids.push(cu('membraneFeedTds'));
   const changes = ids.map((id) => {
     const a = metricValue(prevResult, id), b = metricValue(res, id);
@@ -512,10 +534,10 @@ function renderStreams(res) {
 
 function pushPermeate(rows, res, Qp) {
   if (res.split) {
-    rows.push(['Front permeate', res.frontFlow / 24, state.frontPermPressure, res.frontTds]);
-    rows.push(['Rear permeate', res.rearFlow / 24, state.permPressure, res.rearTds]);
+    rows.push(['Front permeate', res.frontFlow / 24, res.frontBackPressure, res.frontTds]);
+    rows.push(['Rear permeate', res.rearFlow / 24, res.rearBackPressure, res.rearTds]);
   }
-  rows.push([res.split ? 'Total permeate (blended)' : 'Permeate', Qp, state.permPressure, res.permTds]);
+  rows.push([res.split ? 'Total permeate (blended)' : 'Permeate', Qp, res.split ? Math.min(res.frontBackPressure, res.rearBackPressure) : res.rearBackPressure, res.permTds]);
 }
 
 function renderSplit(res) {
@@ -540,6 +562,11 @@ function renderSplit(res) {
       ${col(`Front · 1–${n}`, res.frontFlow, res.frontShare, res.frontTds, res.frontCond, res.frontBoron)}
       ${col(`Rear · ${n + 1}–${res.elements.length}`, res.rearFlow, res.rearShare, res.rearTds, res.rearCond, res.rearBoron)}
       ${col('Blended', res.permFlow, 1, res.permTds, res.permCond, res.permBoron)}
+    </div>
+    <div class="fact-table">
+      ${factRow('Split ratio, front : rear', `<strong>${fmt(res.frontShare * 100, 1)} : ${fmt(res.rearShare * 100, 1)}</strong>`)}
+      ${factRow('Front / rear back-pressure', `${fmt(res.frontBackPressure, 2)} / ${fmt(res.rearBackPressure, 2)} bar`)}
+      ${res.splitControl === 'ratio' ? factRow('Split-control valve', res.throttlePort ? `throttling the ${res.throttlePort} port by +${fmt(res.throttle, 2)} bar` : 'fully open (natural split)') : ''}
     </div>
     <p class="ro-note">Rear permeate is ${fmt(res.rearTds / res.frontTds, 1)}× saltier than front. Typical use: front permeate to product, rear permeate to a second pass or blending.</p>`;
 }
@@ -605,7 +632,9 @@ function renderSweep() {
   const ym = metric(sweepY);
   const xmax = xn.id === 'split' ? state.elements - 1 : xn.max;
   if (xmax <= xn.min) { qs('#ro-sweep-chart').innerHTML = '<p class="ro-note">Needs at least 2 elements per vessel.</p>'; return; }
-  const N = xn.step >= 1 && (xmax - xn.min) / xn.step <= 24 ? Math.round((xmax - xn.min) / xn.step) : 24;
+  // Split-ratio control makes each run several times dearer: fewer points.
+  const cap = state.splitControl === 'ratio' && state.split > 0 ? 16 : 24;
+  const N = xn.step >= 1 && (xmax - xn.min) / xn.step <= cap ? Math.round((xmax - xn.min) / xn.step) : cap;
   const pts = [];
   for (let i = 0; i <= N; i++) {
     const x = xn.min + (xmax - xn.min) * i / N;
@@ -697,6 +726,22 @@ function setMode(mode) {
   update();
 }
 
+function setSplitControl(mode) {
+  if (mode === state.splitControl) return;
+  // Start the ratio at the current natural split so nothing jumps.
+  if (mode === 'ratio' && current && current.split) {
+    state.splitTarget = Math.min(Math.max(Math.round(current.frontShare * 100), 10), 90);
+    qs('[data-range="splitTarget"]').value = state.splitTarget;
+    qs('[data-num="splitTarget"]').value = state.splitTarget;
+  }
+  state.splitControl = mode;
+  lastChanged = 'splitControl';
+  qsa('[data-split-control]').forEach((b) => b.classList.toggle('active', b.dataset.splitControl === mode));
+  refreshVisibility();
+  sweepOptions();
+  update();
+}
+
 function setConcUnit(unit) {
   if (unit === state.concUnit) return;
   // Keep the same water: convert the feed value across.
@@ -746,6 +791,7 @@ function bind(view) {
     if (!b) return;
     if (b.dataset.mode) setMode(b.dataset.mode);
     if (b.dataset.conc) setConcUnit(b.dataset.conc);
+    if (b.dataset.splitControl) setSplitControl(b.dataset.splitControl);
     if (b.dataset.profile) {
       profileMetric = b.dataset.profile;
       qsa('[data-profile]').forEach((c) => c.classList.toggle('active', c === b));
@@ -776,6 +822,7 @@ function bind(view) {
 
 function mount(view) {
   view.innerHTML = shell();
+  refreshVisibility();
   sweepOptions();
   sweepYOptions();
   current = null;

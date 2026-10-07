@@ -143,7 +143,7 @@ export function lineChart(container, points, opts = {}) {
   const xScale = (v) => m.l + (v - x0) / (x1 - x0) * (width - m.l - m.r);
   axes(svg, { width, height, m, yTicks, yScale, yUnit: opts.yUnit || '' });
 
-  const xTicks = niceTicks(x0, x1, Math.max(3, Math.floor((width - m.l - m.r) / 70))).filter((t) => t >= x0 - 1e-9 && t <= x1 + 1e-9);
+  const xTicks = niceTicks(x0, x1, Math.max(4, Math.floor((width - m.l - m.r) / 60))).filter((t) => t >= x0 - 1e-9 && t <= x1 + 1e-9);
   const xStep = xTicks.length > 1 ? Math.abs(xTicks[1] - xTicks[0]) : 1;
   for (const t of xTicks) {
     const txt = svgEl('text', { x: xScale(t), y: height - m.b + 16, 'text-anchor': 'middle', class: 'ro-axis' });

@@ -235,7 +235,7 @@ function summarise(inp, membrane, vessel, feedPerVessel, membraneFeed) {
   if (last.ndp < 3) warnings.push(`Net driving pressure at the tail element is only ${last.ndp.toFixed(1)} bar — the last elements barely produce water.`);
   if (vessel.out.C > 75000) warnings.push(`Concentrate TDS ${Math.round(vessel.out.C)} mg/L is very high — check CaCO₃/CaSO₄ scaling and antiscalant limits.`);
   if (inp.split > 0 && front.flow <= 0) warnings.push('Front permeate back-pressure is so high that the front elements make no water.');
-  const permBackMax = inp.split > 0 ? Math.max(inp.permPressure, inp.frontPermPressure) : inp.permPressure;
+  const permBackMax = inp.split > 0 ? Math.max(inp._rearBack, inp._frontBack) : inp._rearBack;
   if (permBackMax > 4.5) warnings.push(`Permeate back-pressure ${permBackMax.toFixed(1)} bar is close to the ~5 bar limit at which elements can be damaged on shutdown.`);
 
   return {
@@ -252,6 +252,8 @@ function summarise(inp, membrane, vessel, feedPerVessel, membraneFeed) {
     permCond: all.ec,
     permBoron: all.boron,
     split: inp.split > 0,
+    frontBackPressure: inp._frontBack,
+    rearBackPressure: inp._rearBack,
     frontFlow: front.flow * nv * 24,
     frontShare: front.flow / all.flow,
     frontTds: front.tds,
@@ -329,53 +331,110 @@ function solvePressure(inp, membrane, perm, feedPerVessel, feed, qpTarget, lo, h
   return { P: hi, run, capped: false };
 }
 
+const THROTTLE_MAX = 20;  // bar a split-control valve may add on either port
+
+// Front share of the permeate in one vessel run.
+function frontShare(run) {
+  const front = run.v.elements.filter((e) => e.port === 'front').reduce((s, e) => s + e.permFlow, 0);
+  return run.qp > 0 ? front / run.qp : 0;
+}
+
+// Back-pressures with throttle t: t > 0 throttles the front port, t < 0 the rear.
+function withThrottle(perm, inp, t) {
+  return { ...perm, PpFront: inp.frontPermPressure + Math.max(t, 0), Pp: inp.permPressure + Math.max(-t, 0) };
+}
+
+// Find the throttle that gives the target front share at feed pressure P.
+// Front share falls monotonically as t rises.
+function solveThrottle(inp, membrane, perm, P, feedPerVessel, feed, target, t0) {
+  const share = (t) => frontShare(runAtPressure(inp, membrane, withThrottle(perm, inp, t), P, feedPerVessel, feed));
+  let lo = -THROTTLE_MAX, hi = THROTTLE_MAX;
+  if (t0 !== null) {
+    // Warm start: a narrow bracket around the last answer, if it still brackets.
+    const a = Math.max(t0 - 1, lo), b = Math.min(t0 + 1, hi);
+    if (share(a) >= target && share(b) <= target) { lo = a; hi = b; }
+  }
+  if (share(lo) < target) return { t: lo, reached: false };
+  if (share(hi) > target) return { t: hi, reached: false };
+  while (hi - lo > 0.005) {
+    const mid = (lo + hi) / 2;
+    if (share(mid) > target) lo = mid; else hi = mid;
+  }
+  return { t: (lo + hi) / 2, reached: true };
+}
+
 // Main entry. mode 'pressure': feed pressure + feed flow are inputs.
 // mode 'flow': permeate flow + recovery are inputs; feed pressure is solved.
 export function simulate(input) {
-  const inp = { split: 0, frontPermPressure: 0, erdLeak: 0, erdMixing: 0, ...input };
+  const inp = { split: 0, frontPermPressure: 0, erdLeak: 0, erdMixing: 0, splitControl: 'pressure', splitTarget: 60, ...input };
   const membrane = getMembrane(inp.membrane);
-  const perm = permeabilities(inp, membrane);
+  const basePerm = permeabilities(inp, membrane);
   const P_MAX = 150;
 
   // An isobaric ERD mixes some brine into the seawater it pressurises, so the
   // membranes see a saltier feed than the intake. That depends on the brine,
-  // which depends on the feed: iterate to a fixed point.
+  // which depends on the feed. A split-ratio controller adds a valve setting
+  // that depends on the feed pressure, and vice versa. Iterate to a fixed point.
   const raw = { C: inp.feedTds, Cb: inp.feedBoron };
   let feed = { ...raw };
   const mixing = inp.erd === 'isobaric' ? inp.erdMixing / 100 : 0;
   const leak = inp.erd === 'isobaric' ? inp.erdLeak / 100 : 0;
   const flowMode = inp.mode === 'flow';
+  const ratioControl = inp.splitControl === 'ratio' && basePerm.split > 0;
+  const target = inp.splitTarget / 100;
   const qpTarget = flowMode ? inp.permTarget / 24 / inp.vessels : 0;
   const feedPerVessel = flowMode ? qpTarget / (inp.recoveryTarget / 100) : inp.feedFlow / 24 / inp.vessels;
 
   let P = inp.feedPressure, run, capped = false;
-  for (let it = 0; it < (mixing > 0 ? 8 : 1); it++) {
+  let t = 0, reached = true, tPrev = null;
+  let perm = basePerm;
+  const passes = mixing > 0 || ratioControl ? 12 : 1;
+  for (let it = 0; it < passes; it++) {
+    const Pprev = P;
     if (flowMode) {
       // Warm-start the bracket from the previous pass.
-      const lo = it ? P - 5 : osmotic(feed.C, inp.temp) + Math.min(inp.permPressure, inp.frontPermPressure);
+      const lo = it ? P - 5 : osmotic(feed.C, inp.temp) + Math.min(perm.Pp, perm.PpFront);
       const hi = it ? Math.min(P + 5, P_MAX) : P_MAX;
       ({ P, run, capped } = solvePressure(inp, membrane, perm, feedPerVessel, feed, qpTarget, lo, hi));
     } else {
       run = runAtPressure(inp, membrane, perm, P, feedPerVessel, feed);
     }
-    if (mixing <= 0) break;
-    const Qp = run.qp, Qc = run.v.out.Qf, L = leak * Qc;
-    const erdStream = Qc - L;
-    const mixC = raw.C + mixing * (run.v.out.C - raw.C);
-    const mixB = raw.Cb + mixing * (run.v.out.Cb - raw.Cb);
-    const next = {
-      C: ((Qp + L) * raw.C + erdStream * mixC) / feedPerVessel,
-      Cb: ((Qp + L) * raw.Cb + erdStream * mixB) / feedPerVessel,
-    };
-    const done = Math.abs(next.C - feed.C) < 0.5;
-    feed = next;
-    if (done) break;
+    let settled = true;
+    if (ratioControl) {
+      ({ t, reached } = solveThrottle(inp, membrane, basePerm, P, feedPerVessel, feed, target, tPrev));
+      settled = tPrev !== null && Math.abs(t - tPrev) < 0.01;
+      tPrev = t;
+      perm = withThrottle(basePerm, inp, t);
+      run = runAtPressure(inp, membrane, perm, P, feedPerVessel, feed);
+    }
+    if (mixing > 0) {
+      const Qp = run.qp, Qc = run.v.out.Qf, L = leak * Qc;
+      const erdStream = Qc - L;
+      const mixC = raw.C + mixing * (run.v.out.C - raw.C);
+      const mixB = raw.Cb + mixing * (run.v.out.Cb - raw.Cb);
+      const next = {
+        C: ((Qp + L) * raw.C + erdStream * mixC) / feedPerVessel,
+        Cb: ((Qp + L) * raw.Cb + erdStream * mixB) / feedPerVessel,
+      };
+      if (Math.abs(next.C - feed.C) >= 0.5) settled = false;
+      feed = next;
+    }
+    if (it > 0 && Math.abs(P - Pprev) > 0.01) settled = false;
+    if (settled && (it > 0 || passes === 1)) break;
   }
   inp._feedPressure = P;
+  inp._frontBack = perm.PpFront;
+  inp._rearBack = perm.Pp;
   const out = summarise(inp, membrane, run.v, feedPerVessel, feed);
   if (flowMode && capped) {
     out.warnings.unshift('Target cannot be reached even at 150 bar — reduce recovery or product flow, or add elements.');
   }
+  if (ratioControl && !reached) {
+    out.warnings.unshift(`A ${inp.splitTarget} % front split cannot be reached by throttling either port (limit +${THROTTLE_MAX} bar). Move the split point instead.`);
+  }
+  out.splitControl = ratioControl ? 'ratio' : 'pressure';
+  out.throttlePort = !ratioControl || Math.abs(t) < 0.005 ? null : t > 0 ? 'front' : 'rear';
+  out.throttle = Math.abs(t);
   out.membrane = membrane;
   return out;
 }
