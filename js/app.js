@@ -4,6 +4,7 @@ import { renderLogList, renderNewEntry, renderEditEntry } from './notes/notes-ui
 import { renderCalculatorsHome, renderDomainList, renderCalculatorDetail } from './calculators/calculator-shell.js';
 import { renderProceduresList, renderProcedureDetail } from './procedures/procedures-viewer.js';
 import { renderSettings } from './settings/settings-ui.js';
+import { renderRoSim } from './ro-sim/ro-sim-ui.js';
 import { listEntries } from './notes/notes.js';
 import { DOMAINS, calculatorsByDomain } from './calculators/registry.js';
 
@@ -15,6 +16,7 @@ async function renderHome() {
       <a class="card card-link" href="#/log/new"><h3>+ New Log Entry</h3><p>Record today's activity</p></a>
       <a class="card card-link" href="#/calculators"><h3>Calculators</h3><p>${DOMAINS.reduce((n, d) => n + calculatorsByDomain(d.id).length, 0)} tools</p></a>
     </div>
+    <a class="card card-link" href="#/ro-sim"><h3>\u{1F30A} SWRO Simulator</h3><p>Seawater RO with Toray elements: change a variable, see the effect on product quality and production</p></a>
 
     <div class="section-title">Recent Log Entries</div>
     ${entries.length === 0 ? '<div class="empty-state">No log entries yet. Start your first one above.</div>' : entries.map((e) => `
@@ -101,6 +103,7 @@ function initRoutes() {
   registerRoute('/log/new', renderNewEntry);
   registerRoute('/log/:id', renderEditEntry);
   registerRoute('/settings', renderSettings);
+  registerRoute('/ro-sim', renderRoSim);
   setNotFound(() => '<div class="empty-state">Page not found.</div>');
   initRouter(qs('#view'));
 }

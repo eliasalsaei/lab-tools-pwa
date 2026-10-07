@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'labtools-v2';
+const CACHE_VERSION = 'labtools-v3';
 
 const PRECACHE_URLS = [
   './',
@@ -6,6 +6,7 @@ const PRECACHE_URLS = [
   './manifest.json',
   './css/main.css',
   './css/themes.css',
+  './css/ro-sim.css',
   './js/app.js',
   './js/router.js',
   './js/db.js',
@@ -41,6 +42,10 @@ const PRECACHE_URLS = [
   './js/notes/notes.js',
   './js/notes/notes-ui.js',
   './js/settings/settings-ui.js',
+  './js/ro-sim/ro-sim-ui.js',
+  './js/ro-sim/engine.js',
+  './js/ro-sim/membranes.js',
+  './js/ro-sim/charts.js',
   './data/procedures/water.json',
   './data/procedures/boiler.json',
   './data/procedures/wastewater.json',
